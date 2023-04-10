@@ -30,13 +30,13 @@ greater than 1, and returns results.
 # Generate arbitrary toy data
 dat <- matrix(rnbinom(n=5000, mu=100, size= 1/0.5),ncol=10)
 for (x in 1:250) {
-dat[x,] <- dat[x,] + sample(800:1200, 10, replace=T)
+dat[x,] <- dat[x,] + sample(800:1200, 10, replace=TRUE)
 }
 for (x in 250:500) {
-dat[x,] <- dat[x,] + sample(0:100, 10, replace=T)
+dat[x,] <- dat[x,] + sample(0:100, 10, replace=TRUE)
 }
 for (x in 1:5) {
-dat[,x] <- dat[,x] + sample(800:1000, 5, replace=T)
+dat[,x] <- dat[,x] + sample(800:1000, 5, replace=TRUE)
 }
 dat <- matrix(as.numeric(dat), ncol = ncol(dat))
 colnames(dat) <- c("MeCP2_WT_1",	"MeCP2_WT_2",	"MeCP2_WT_3",
