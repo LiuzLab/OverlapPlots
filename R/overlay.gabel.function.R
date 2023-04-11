@@ -27,7 +27,7 @@ overlay.gabels.plot <- function(mat, bin.size = 200, shift.size = 40,
 #' @param comp.between2 comp between
 #'
 #' @return overlay ggplots objects
-#' @export
+#' @noRd
 #'
 #' @examples
 overlay.moving.average.function <- function(dat, bin.size, shift.size,
@@ -182,7 +182,7 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
 #' @param equal.variance whether or not to assume equal variance. Default is FALSE.
 #'
 #' @return p-values
-#' @export
+#' @noRd
 #'
 #' @examples
 studentt.test2 <- function(m1,m2,s1,s2,n1,n2=n1,m0=0,equal.variance=FALSE){

@@ -29,5 +29,7 @@ points are ordered by their distance to the closest center minus the distance
 to the farthest cluster. Each point is assigned to the best cluster in order.
 }
 \examples{
-\dontrun{WTgrp_kmeans_eqSize(control_mat = mat[,1:10])}
+mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+WTgrp_kmeans(control_mat = mat)
 }

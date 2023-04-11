@@ -30,7 +30,7 @@ gabels.plot <- function(mat, length.type = "Gene", comp.between = "",
 #' @param y.axis Mean Lof2 Fold Change
 #'
 #' @return ggplot object
-#' @export
+#' @noRd
 #'
 #' @examples
 moving.average.function <- function(dat, bin.size, shift.size, length.type,

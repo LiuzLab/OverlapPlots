@@ -5,7 +5,7 @@
 #' @param samples samples
 #'
 #' @return boxplot
-#' @export
+#' @noRd
 #'
 #' @examples
 boxPlot <- function(data, samples){
@@ -23,7 +23,7 @@ boxPlot <- function(data, samples){
 #' @param genotypes genotypes
 #'
 #' @return ggplot object with gene expression levels
-#' @export
+#' @noRd
 #'
 #' @examples
 ## Gene Expression Level in Microarray data
@@ -59,7 +59,7 @@ GeneExpLevels <- function(data, gene.id, genotypes){
 #' @param conditions conditions
 #'
 #' @return ggplot obuect MDS plot
-#' @export
+#' @noRd
 #'
 #' @examples
 ## MDS Plot
@@ -108,7 +108,7 @@ MDSplot <- function(data, genotypes, conditions){
 #' @param conditions conditions
 #'
 #' @return ggplot object PCA plot
-#' @export
+#' @noRd
 #'
 #' @examples
 ## PCA plot
@@ -155,7 +155,7 @@ PCAplot <- function(data, genotypes, conditions){
 #' @param pc pc
 #'
 #' @return PC with its variance
-#' @export
+#' @noRd
 #'
 #' @examples
 makeLab = function(x,pc) {
@@ -171,7 +171,7 @@ makeLab = function(x,pc) {
 #' @param pval p-values
 #'
 #' @return scatter plot
-#' @export
+#' @noRd
 #'
 #' @examples
 #' \dontrun{Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
@@ -220,7 +220,7 @@ Plot.Scatter <-function(dat, log2FC, comp.between, pval = 0.05){
 #' @param dat data
 #'
 #' @return Scatter plot
-#' @export
+#' @noRd
 #'
 #' @examples
 ## Scatter Plot with lm line

@@ -23,5 +23,7 @@ labeled index from k-means clustering
 clustering with 2 clusters and outputs corresponding index groups.
 }
 \examples{
-\dontrun{WTgrp_kmeans(control_mat = mat[,1:10])}
+mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+WTgrp_kmeans(control_mat = mat)
 }

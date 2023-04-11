@@ -106,7 +106,9 @@ overlap_wrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
 #' @export
 #'
 #' @examples
-#' \dontrun{WTgrp_kmeans(control_mat = mat[,1:10])}
+#' mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+#' matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+#' WTgrp_kmeans(control_mat = mat)
 ## original k-means
 WTgrp_kmeans <- function(control_mat, centers = 2, iter.max = 1000){
   group <- kmeans(t(control_mat), centers, iter.max)$cluster
@@ -141,7 +143,9 @@ WTgrp_kmeans <- function(control_mat, centers = 2, iter.max = 1000){
 #' @export
 #'
 #' @examples
-#' \dontrun{WTgrp_kmeans_eqSize(control_mat = mat[,1:10])}
+#' mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+#' matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+#' WTgrp_kmeans(control_mat = mat)
 WTgrp_kmeans_eqSize <- function(control_mat, centers = 2, iter.max = 1000){
   size <- ceiling(nrow(t(control_mat))/centers)
   group <- kmeans(t(control_mat), centers, iter.max)

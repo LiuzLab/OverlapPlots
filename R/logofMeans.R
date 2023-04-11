@@ -10,6 +10,14 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' mat <- rbind(matrix(rnorm(600, sd = 0.3), ncol = 6),
+#' matrix(rnorm(600, mean = 1, sd = 0.3), ncol = 6))
+#' colnames(mat) <- c("WT_1","WT_2","WT_3","WT_4","WT_5","WT_6")
+#' logofMeans.between.A.B(dat = mat, A.samples = 1:3,
+#' B.samples = 1:3)
+#' }
+
 logofMeans.between.A.B <- function(dat, A.samples, B.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})
   dat$Mean.B <- apply(dat[,B.samples], 1, function(r) {(mean(r))})
@@ -33,6 +41,14 @@ logofMeans.between.A.B <- function(dat, A.samples, B.samples){
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' mat <- rbind(matrix(rnorm(600, sd = 0.3), ncol = 6),
+#' matrix(rnorm(600, mean = 1, sd = 0.3), ncol = 6))
+#' colnames(mat) <- c("WT_1","WT_2","WT_3","WT_4","WT_5","WT_6")
+#' logofMeans.between.A.B(dat = mat, A.samples = 1:3,
+#' B.samples = 1:3)
+#' }
+#'
 logofMeans.between.ABC <- function(dat, A.samples, B.samples, C.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})
   dat$Mean.B <- apply(dat[,B.samples], 1, function(r) {(mean(r))})
@@ -49,7 +65,7 @@ logofMeans.between.ABC <- function(dat, A.samples, B.samples, C.samples){
 #' @param dat data
 #'
 #' @return log2 fold change between genotypes
-#' @export
+#' @noRd
 #'
 #' @examples
 ## log2FC between genotypes

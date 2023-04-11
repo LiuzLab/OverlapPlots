@@ -21,3 +21,13 @@ log2 fold change of means between three given samples
 \description{
 Computes the mean of each sample, fold change, and log fold change.
 }
+\examples{
+\dontrun{
+mat <- rbind(matrix(rnorm(600, sd = 0.3), ncol = 6),
+matrix(rnorm(600, mean = 1, sd = 0.3), ncol = 6))
+colnames(mat) <- c("WT_1","WT_2","WT_3","WT_4","WT_5","WT_6")
+logofMeans.between.A.B(dat = mat, A.samples = 1:3,
+B.samples = 1:3)
+}
+
+}
