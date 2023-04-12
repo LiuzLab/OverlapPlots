@@ -7,7 +7,7 @@
 logofMeans.between.ABC(dat, A.samples, B.samples, C.samples)
 }
 \arguments{
-\item{dat}{Differential analysis results from "DESeqCalculation"}
+\item{dat}{a dataframe. Differential analysis results from "DESeqCalculation"}
 
 \item{A.samples}{First sample type}
 
@@ -22,12 +22,9 @@ log2 fold change of means between three given samples
 Computes the mean of each sample, fold change, and log fold change.
 }
 \examples{
-\dontrun{
-mat <- rbind(matrix(rnorm(600, sd = 0.3), ncol = 6),
-matrix(rnorm(600, mean = 1, sd = 0.3), ncol = 6))
-colnames(mat) <- c("WT_1","WT_2","WT_3","WT_4","WT_5","WT_6")
-logofMeans.between.A.B(dat = mat, A.samples = 1:3,
-B.samples = 1:3)
-}
+dat <- matrix(rnorm(600, sd = 0.3), ncol = 9)
+dat <- as.data.frame(dat)
+logofMeans.between.ABC(dat = dat, A.samples = 1:3, B.samples = 4:6, C.samples = 7:9)
+
 
 }

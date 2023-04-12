@@ -8,7 +8,7 @@
 #' @param comp.between2 comp between
 #'
 #' @return gabels plot
-#' @export
+#' @noRd
 #'
 #' @examples
 overlay.gabels.plot <- function(mat, bin.size = 200, shift.size = 40,

@@ -2,7 +2,7 @@
 #' Log of means between two samples
 #' @description
 #' Computes the mean of each sample, fold change, and log fold change.
-#' @param dat Differential analysis results from "DESeqCalculation"
+#' @param dat a dataframe. Differential analysis results from "DESeqCalculation"
 #' @param A.samples First sample type
 #' @param B.samples Second sample type
 #'
@@ -10,13 +10,10 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' mat <- rbind(matrix(rnorm(600, sd = 0.3), ncol = 6),
-#' matrix(rnorm(600, mean = 1, sd = 0.3), ncol = 6))
-#' colnames(mat) <- c("WT_1","WT_2","WT_3","WT_4","WT_5","WT_6")
-#' logofMeans.between.A.B(dat = mat, A.samples = 1:3,
-#' B.samples = 1:3)
-#' }
+#' dat <- matrix(rnorm(600, sd = 0.3), ncol = 6)
+#' dat <- as.data.frame(dat)
+#' logofMeans.between.A.B(dat = dat, A.samples = 1:3, B.samples = 4:6)
+#'
 
 logofMeans.between.A.B <- function(dat, A.samples, B.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})
@@ -32,7 +29,7 @@ logofMeans.between.A.B <- function(dat, A.samples, B.samples){
 #' @description
 #' Computes the mean of each sample, fold change, and log fold change.
 #'
-#' @param dat Differential analysis results from "DESeqCalculation"
+#' @param dat a dataframe. Differential analysis results from "DESeqCalculation"
 #' @param A.samples First sample type
 #' @param B.samples Second sample type
 #' @param C.samples Third sample type
@@ -41,13 +38,10 @@ logofMeans.between.A.B <- function(dat, A.samples, B.samples){
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' mat <- rbind(matrix(rnorm(600, sd = 0.3), ncol = 6),
-#' matrix(rnorm(600, mean = 1, sd = 0.3), ncol = 6))
-#' colnames(mat) <- c("WT_1","WT_2","WT_3","WT_4","WT_5","WT_6")
-#' logofMeans.between.A.B(dat = mat, A.samples = 1:3,
-#' B.samples = 1:3)
-#' }
+#' dat <- matrix(rnorm(600, sd = 0.3), ncol = 9)
+#' dat <- as.data.frame(dat)
+#' logofMeans.between.ABC(dat = dat, A.samples = 1:3, B.samples = 4:6, C.samples = 7:9)
+#'
 #'
 logofMeans.between.ABC <- function(dat, A.samples, B.samples, C.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})

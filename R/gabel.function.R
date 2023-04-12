@@ -10,7 +10,7 @@
 #' @param y.axis Mean Log2 Fold Change
 #'
 #' @return Box plot
-#' @export
+#' @noRd
 #'
 #' @examples
 gabels.plot <- function(mat, length.type = "Gene", comp.between = "",
