@@ -58,7 +58,6 @@ moving.average.function <- function(dat, bin.size, shift.size, length.type,
     mat <- dat[start:end, 1]
     mat.mean <- mean(mat)
     mat.length <- mean(dat[start:end, 2])
-    #cat("Bin",i+1,": ",start,"-",end,"\t",mat.length,"\t",mat.mean,"\n",sep="")
     mat.mean <- data.frame(mat.mean, mat.length)
     mean.points <- rbind(mean.points, mat.mean)
     ## end exceeds total number of genes

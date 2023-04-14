@@ -7,7 +7,8 @@
 DESeqCalculation(dat, genotypes, fc = 1.15)
 }
 \arguments{
-\item{dat}{RNAseq exon counts data. Table with samples in columns and gene in rows.}
+\item{dat}{RNAseq exon counts data. Table with samples in columns and gene
+in rows.}
 
 \item{genotypes}{factor WT and KO.}
 
@@ -18,13 +19,13 @@ Differential analysis results and plots.
 }
 \description{
 "DESeqCalculation" takes RNAseq exon counts data and genotypes. Performs
-intermediate calculations and results of differential gene expression analysis.
-Generates boxplots showing gene expression distributions per sample, PCAplots
-separating different KO and WT conditions, differential analysis
-gene expression of up and down regulated heatmaps with hierarchical clustering
-on samples and genes with euclidean and correlation distances respectively,
-MA plot (gene count vs fold change), histogram of p-values with base mean
-greater than 1, and returns results.
+intermediate calculations and results of differential gene expression
+analysis. Generates boxplots showing gene expression distributions per
+sample, PCAplots separating different KO and WT conditions, differential
+analysis gene expression of up and down regulated heatmaps with hierarchical
+clustering on samples and genes with euclidean and correlation distances
+respectively, MA plot (gene count vs fold change), histogram of p-values
+with base mean greater than 1, and returns results.
 }
 \examples{
 # Generate arbitrary toy data
@@ -51,9 +52,9 @@ DESeqCalculation(dat = dat,genotypes = genotypes, fc = 1.15)
 
 \dontrun{
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-dat <- read.table("../../dat/counts/GSE128178_10WT_10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt",
-                  sep = "\t", stringsAsFactors=F, header = TRUE, row.names = 1)
+dat <- read.table(paste("../../dat/counts/GSE128178_10WT",
+"_10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt"),
+sep = "\t", stringsAsFactors=FALSE, header = TRUE, row.names = 1)
 wholeCell.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
 }
-
 }

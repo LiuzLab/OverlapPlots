@@ -24,7 +24,8 @@ Computes the mean of each sample, fold change, and log fold change.
 \examples{
 dat <- matrix(rnorm(600, sd = 0.3), ncol = 9)
 dat <- as.data.frame(dat)
-logofMeans.between.ABC(dat = dat, A.samples = 1:3, B.samples = 4:6, C.samples = 7:9)
+logofMeans.between.ABC(dat = dat, A.samples = 1:3, B.samples = 4:6,
+ C.samples = 7:9)
 
 
 }

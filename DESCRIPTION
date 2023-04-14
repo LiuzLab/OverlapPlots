@@ -16,11 +16,12 @@ Authors@R:
 Description: Recent studies have suggested that genes longer than 100 kb are more likely to be misregulated in neurological diseases associated with synaptic dysfunction, such as autism and Rett syndrome (Gabel et al. 2015, Boxer et al. 2020). These length-dependent transcriptional changes are modest in MeCP2-mutant samples, but, given the low sensitivity of high-throughput transcriptome profiling technology, here we re-evaluate the statistical significance of these results. We find that the apparent length-dependent trends previously observed in MeCP2 microarray and RNA-sequencing datasets disappear after estimating baseline variability from randomized control samples. Overlap plots helps compare the KO/WT and WT/WT variations.
 License: CC BY 4.0
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 RoxygenNote: 7.2.3
 Imports: 
     cowplot (>= 1.1.1),
     DESeq2 (>= 1.36.0),
+    details (>= 0.3.0),
     dplyr (>= 1.1.0),
     edgeR (>= 3.38.4),
     ggplot2 (>= 3.4.1),
@@ -34,6 +35,7 @@ Imports:
     rafalib (>= 1.0.0),
     reshape2 (>= 1.4.4),
     scales (>= 1.2.1),
+    sessioninfo (>= 1.2.2),
     stats (>= 4.2.3),
     SummarizedExperiment (>= 1.26.1),
     tibble (>= 3.1.8),
@@ -42,4 +44,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-biocViews: Genetics, Epigenetics
+biocViews: GeneExpression, Sequencing, Microarray,
+      DifferentialExpression, Clustering, RNASeq

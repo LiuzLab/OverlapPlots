@@ -13,7 +13,7 @@ overlap_wrapper(
   WT2.idx,
   bin.size,
   shift.size,
-  shrink_lfc = F
+  shrink_lfc = FALSE
 )
 }
 \arguments{
@@ -39,12 +39,13 @@ overlap_wrapper(
 results and plots
 }
 \description{
-"Wrapper around overlap plots" takes "DESeqCalculation" results, k-mean clustering index groups, and computes running average
+"Wrapper around overlap plots" takes "DESeqCalculation" results,
+k-mean clustering index groups, and computes running average
 plots (log2 fold change vs mean gene length).
 
-Uses Overlay Gabel's moving average function which calculates the mean of log2
-fold change and genomic lengths. Computes p-values using student t-test function,
-and returns overlay line plots.
+Uses Overlay Gabel's moving average function which calculates the mean of
+log2 fold change and genomic lengths. Computes p-values using student t-test
+function, and returns overlay line plots.
 }
 \examples{
 ## Load annotation dataset
@@ -52,8 +53,9 @@ and returns overlay line plots.
 load(file = "../../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
 ## Load gene counts
-dat <- read.table("../../dat/counts/GSE128178_10WT_10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt",
-                  sep = "\t", stringsAsFactors=F, header = TRUE, row.names = 1)
+dat <- read.table(paste("../../dat/counts/GSE128178_10WT_",
+"10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt"),
+           sep = "\t", stringsAsFactors=FALSE, header = TRUE, row.names = 1)
 # Run DESeq analysis
 wholeCell.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
 mat <- wholeCell.KO$results[,c(8:27,1,3)]

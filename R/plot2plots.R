@@ -10,7 +10,7 @@
 #' @examples
 boxPlot <- function(data, samples){
   par(mar=c(2+round(max(nchar(colnames(data)))/2),4,2,1),font=2)
-  boxplot(data, boxwex=0.6, notch=T, outline=FALSE, las=2, col=samples)
+  boxplot(data, boxwex=0.6, notch=TRUE, outline=FALSE, las=2, col=samples)
   legend("topleft", levels(samples), fill = palette(), bty="n", cex = 0.8,
          xpd = TRUE)
 }
@@ -65,38 +65,39 @@ GeneExpLevels <- function(data, gene.id, genotypes){
 ## MDS Plot
 MDSplot <- function(data, genotypes, conditions){
   mdsDist = cmdscale(d = dist(t(data)), eig = TRUE, k = 2)
-  mdsDist = data.frame(genotypes, x = mdsDist$points[,1]/1e4, y = mdsDist$points[,2]/1e4)
+  mdsDist = data.frame(genotypes, x = mdsDist$points[,1]/1e4,
+                       y = mdsDist$points[,2]/1e4)
 
   ## plot
   if(missing(conditions)){
     print(ggplot(mdsDist, aes(x = x, y = y, color = genotypes)) +
-            geom_point(size = 1) + ## shape = genotypes,
-            ylab("MDS Coordinate 2 (x 1e4)") + xlab("MDS Coordinate 1 (x 1e4)") +
-            theme_bw() + theme(legend.text = element_text(size = 18,
-                                                          face = "bold"),
-                               legend.title = element_text(size = 18, colour = "black",
-                                                           face = "bold"),
-                               axis.title = element_text(size = 18, face = "bold"),
-                               axis.text.x = element_text(size = 18, face = "bold",
+          geom_point(size = 1) + ## shape = genotypes,
+          ylab("MDS Coordinate 2 (x 1e4)") + xlab("MDS Coordinate 1 (x 1e4)") +
+          theme_bw() + theme(legend.text = element_text(size = 18,
+                      face = "bold"),
+                      legend.title = element_text(size = 18, colour = "black",
+                      face = "bold"),
+                      axis.title = element_text(size = 18, face = "bold"),
+                      axis.text.x = element_text(size = 18, face = "bold",
                                                           color = "black"),
-                               axis.text.y = element_text(size = 18, face = "bold",
+                      axis.text.y = element_text(size = 18, face = "bold",
                                                           color = "black"),
-                               plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
+                      plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
   }
   else{
     print(ggplot(mdsDist, aes(x = x, y = y, shape = conditions,
                               color = genotypes)) + geom_point(size = 8) +
-            ylab("MDS Coordinate 2 (x 1e4)") + xlab("MDS Coordinate 1 (x 1e4)") +
-            theme_bw() + theme(legend.text = element_text(size = 18,
+          ylab("MDS Coordinate 2 (x 1e4)") + xlab("MDS Coordinate 1 (x 1e4)") +
+          theme_bw() + theme(legend.text = element_text(size = 18,
                                                           face = "bold"),
-                               legend.title = element_text(size = 18, colour = "black",
+                      legend.title = element_text(size = 18, colour = "black",
                                                            face = "bold"),
-                               axis.title = element_text(size = 18, face = "bold"),
-                               axis.text.x = element_text(size = 18, face = "bold",
+                      axis.title = element_text(size = 18, face = "bold"),
+                      axis.text.x = element_text(size = 18, face = "bold",
                                                           color = "black"),
-                               axis.text.y = element_text(size = 18, face = "bold",
+                      axis.text.y = element_text(size = 18, face = "bold",
                                                           color = "black"),
-                               plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
+                      plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
   }
 }
 
@@ -174,7 +175,8 @@ makeLab = function(x,pc) {
 #' @noRd
 #'
 #' @examples
-#' \dontrun{Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
+#' \dontrun{Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR",
+#' "gene.length")],
 #' log2FC = log2(1), comp.between = "")}
 ## Scatter Plot for DEGs
 Plot.Scatter <-function(dat, log2FC, comp.between, pval = 0.05){
@@ -199,19 +201,27 @@ Plot.Scatter <-function(dat, log2FC, comp.between, pval = 0.05){
 
   ## qplot
   print(qplot(y = dat$logFC, x = dat$gene.length/1000, colour = gene.type,
-              xlab = "Gene Length in KB", ylab = paste("Log2 Fold Change", comp.between)) +
-          scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +
-          coord_cartesian(ylim = c(-1.5,1.5)) + theme_bw() +
-          annotate("text", x = 500, y=1.5, label= cont.tab[1,1], size=7, fontface="bold") +
-          annotate("text", x = 500, y=-1.5, label= cont.tab[2,1], size=7, fontface="bold") +
-          annotate("text", x = 1, y=1.5, label = cont.tab[1,2], size=7, fontface="bold") +
-          annotate("text", x = 1, y=-1.5, label = cont.tab[2,2], size=7, fontface="bold") +
-          theme(plot.title = element_text(size = 14, face = "bold"),
-                axis.title = element_text(size = 18, face = "bold"), legend.position="none",
-                axis.text.x = element_text(size = 18, face = "bold", color = "black"),
-                axis.text.y = element_text(size = 18, face = "bold", color = "black"),
-                legend.text = element_text(size = 18, face = "bold"),
-                plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
+      xlab = "Gene Length in KB", ylab = paste("Log2 Fold Change",
+                                               comp.between)) +
+      scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +
+      coord_cartesian(ylim = c(-1.5,1.5)) + theme_bw() +
+      annotate("text", x = 500, y=1.5, label= cont.tab[1,1], size=7,
+               fontface="bold") +
+      annotate("text", x = 500, y=-1.5, label= cont.tab[2,1], size=7,
+               fontface="bold") +
+      annotate("text", x = 1, y=1.5, label = cont.tab[1,2], size=7,
+               fontface="bold") +
+      annotate("text", x = 1, y=-1.5, label = cont.tab[2,2], size=7,
+               fontface="bold") +
+      theme(plot.title = element_text(size = 14, face = "bold"),
+            axis.title = element_text(size = 18, face = "bold"),
+            legend.position="none",
+            axis.text.x = element_text(size = 18, face = "bold",
+                                       color = "black"),
+            axis.text.y = element_text(size = 18, face = "bold",
+                                       color = "black"),
+            legend.text = element_text(size = 18, face = "bold"),
+            plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
 }
 
 ## Scatter Plot with lm line
@@ -225,13 +235,15 @@ Plot.Scatter <-function(dat, log2FC, comp.between, pval = 0.05){
 #' @examples
 ## Scatter Plot with lm line
 scatter.lm <- function(dat){
-  r.sq <- paste("R^2 = ",format(summary(lm(gene.length ~ logFC.crude, dat))$r.squared, digits = 2))
+  r.sq <- paste("R^2 = ",format(summary(lm(gene.length ~ logFC.crude,
+                                           dat))$r.squared, digits = 2))
   print(summary(lm(gene.length ~ logFC.crude, dat)))
   cat(summary(lm(gene.length ~ logFC.crude, dat))$r.squared,"\n")
   print(qplot(y = logFC.crude, x = gene.length/1000, data = dat) +
           geom_smooth(method = "lm") + xlab("Gene Length") +
           ylab("Mean Log2 Fold Change") + theme_bw() +
-          scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +
+          scale_x_continuous(trans = log10_trans(),
+                             breaks = c(0,1,10,100,1000)) +
           annotate("text", x = 500, y=1.5, label = r.sq, size = 5,
                    fontface="bold") +
           theme(plot.title = element_text(size = 18, face = "bold"),

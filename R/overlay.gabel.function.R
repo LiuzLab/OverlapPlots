@@ -84,10 +84,12 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
   idx2 <- nrow(mean.points)
   sign1 <- sign(mean.points$mat.mean1[idx1:idx2])
   sign2 <- sign(mean.points$mat.mean2[idx1:idx2])
-  sign.comp <- sum(apply(data.frame(sign1, sign2), 1, function(r)(r[1] == r[2])))
+  sign.comp <- sum(apply(data.frame(sign1, sign2), 1,
+                         function(r)(r[1] == r[2])))
   if(sign.comp < 3){
     text1 <- "Warning: Directionality issue\nTherefore, inter-change "
-    text2 <- "numerator and denominator for the calculation of logFC of control samples \n"
+    text2 <- paste("numerator and denominator for the calculation of logFC",
+    "of control samples \n")
     message("\n",text1,text2)
     mean.points$mat.mean1 = -mean.points$mat.mean1
   }
@@ -123,20 +125,25 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
       legend.position="none")
 
   ## output and p-value plot
-  gene.type <- ifelse(test = mean.points$fdr < 0.05, yes = "#FF0000", no = "#696969")
+  gene.type <- ifelse(test = mean.points$fdr < 0.05, yes = "#FF0000",
+                      no = "#696969")
   mean.points$gene.type <- ifelse(test = mean.points$fdr < 0.05, 1, 0)
-  cat("Total number of bins = ", dim(mean.points)[1],"\n")
-  cat("Total number of Short Gene bins = ", sum(mean.points$mat.length < 100),"\n")
-  cat("Total number of Long Gene bins = ", sum(mean.points$mat.length >= 100),"\n")
-  cat("Total number of bins that are statistically significant = ",
-      sum(mean.points$gene.type == 1),"\n")
-  cat("Total number of Short Gene bins that are statistically significant = ",
-      sum(mean.points$gene.type == 1 & mean.points$mat.length < 100),"\n")
-  cat("Total number of Long Gene bins that are statistically significant = ",
-      sum(mean.points$gene.type == 1 & mean.points$mat.length >= 100),"\n")
+  # Commenting cat functions out to avoid BiocConductor NOTES 4/14/2023 - DP
+  # cat("Total number of bins = ", dim(mean.points)[1],"\n")
+  # cat("Total number of Short Gene bins = ", sum(mean.points$mat.length < 100),
+  #     "\n")
+  # cat("Total number of Long Gene bins = ", sum(mean.points$mat.length >= 100),
+  #     "\n")
+  # cat("Total number of bins that are statistically significant = ",
+  #     sum(mean.points$gene.type == 1),"\n")
+  # cat("Total number of Short Gene bins that are statistically significant = ",
+  #     sum(mean.points$gene.type == 1 & mean.points$mat.length < 100),"\n")
+  # cat("Total number of Long Gene bins that are statistically significant = ",
+  #     sum(mean.points$gene.type == 1 & mean.points$mat.length >= 100),"\n")
   if(sum(mean.points$fdr < 0.05) > 0){
     y.int <- min(mean.points[which(mean.points$fdr < 0.05 &
-                                     !is.infinite(mean.points$fdr)), "pval.log10"])
+                                     !is.infinite(mean.points$fdr)),
+                             "pval.log10"])
     plot2 <- ggplot(data = mean.points, aes(x = mat.length, y = pval.log10)) +
       geom_line(linewidth = 0.4, colour = "gray70") +
       geom_point(size = 2, color = gene.type) +
@@ -162,11 +169,14 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
       geom_hline(aes(yintercept = y.int), colour="#FF0000",
                  linetype="dashed", size = 1) + theme_bw() +
       theme(axis.title = element_text(size = 24, face = "bold"),
-            axis.text.x = element_text(size = 24, face = "bold", color = "black"),
-            axis.text.y = element_text(size = 24, face = "bold", color = "black"),
+            axis.text.x = element_text(size = 24, face = "bold",
+                                       color = "black"),
+            axis.text.y = element_text(size = 24, face = "bold",
+                                       color = "black"),
             legend.position="none")
   }
-  return(list(plot1 = plot1, plot2 = plot2, bins.stat = mean.points, bins.info = mean.info))
+  return(list(plot1 = plot1, plot2 = plot2, bins.stat = mean.points,
+              bins.info = mean.info))
 }
 
 ## p-values from 2 sample t-test; code adapted from http://bit.ly/2eqeYyO
@@ -178,8 +188,10 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
 #' @param s2 the sample standard deviations
 #' @param n1 the same sizes
 #' @param n2 the same sizes
-#' @param m0 the null value for the difference in means to be tested for. Default is 0
-#' @param equal.variance whether or not to assume equal variance. Default is FALSE.
+#' @param m0 the null value for the difference in means to be tested for.
+#' Default is 0
+#' @param equal.variance whether or not to assume equal variance.
+#' Default is FALSE.
 #'
 #' @return p-values
 #' @noRd

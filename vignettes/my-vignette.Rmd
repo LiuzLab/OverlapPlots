@@ -16,4 +16,19 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(OverlapPlots)
+
 ```
+
+INFO SESSION:
+
+```{r}
+library(details)
+library(sessioninfo)
+
+sessioninfo::session_info()%>%
+     details::details(
+         summary = 'Current session info',
+         open    = TRUE
+     )
+```
+
