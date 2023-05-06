@@ -9,7 +9,7 @@
 
 ## packages
 rm(list = ls())
-setwd("C:/Users/danie/Documents/longene2/R")
+setwd("C:/Users/danie/OneDrive/Documents/OverlapPlots/R")
 #
 
 ## annotation dataset
@@ -30,8 +30,8 @@ mat <- wholeCell.KO$results[,c(8:27,1,3)]
 colnames(mat)[21] <- "gene.name"
 
 ## same cluster sizes
-grp.idx <- WTgrp_kmeans(control_mat = mat[,1:10])
-res1 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
+res1 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 200,
                         shift.size = 40)
@@ -58,7 +58,7 @@ colnames(mat)[21] <- "gene.name"
 ### logFC from Degs from edgeR (Boxer et al.) and
 ### much closer to the Boxer et al. paper
 colnames(mat)[22] <- "log2FoldChange"
-res2 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res2 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 60,
                         shift.size = 6, shrink_lfc = TRUE)
@@ -67,7 +67,7 @@ res2$plot
 ### logFC from Degs from DESeq2
 mat <- degs.dat[,c(1:22)]
 colnames(mat)[21] <- "gene.name"
-res3 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res3 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 60,
                         shift.size = 6, shrink_lfc = TRUE)
@@ -86,12 +86,12 @@ dat <- read.table("../dat/counts/GSE128178_10WT_10MeCP2_KO_nuclear_RNAseq_gene_b
 nuclear.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
 mat <- nuclear.KO$results[,c(8:27,1,3)]
 colnames(mat)[21] <- "gene.name"
-grp.idx <- WTgrp_kmeans(control_mat = mat[,1:10])
+grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
 if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
 message("Cluster size is not equal, therefore run same size k-means variation!")
-    grp.idx <- WTgrp_kmeans_eqSize(control_mat = mat[,1:10])
+    grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
 }
-res4 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res4 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 200,
                         shift.size = 40)
@@ -118,7 +118,7 @@ colnames(mat)[21] <- "gene.name"
 ### logFC from Degs from edgeR (Boxer et al.) and
 ### much closer to the Boxer et al. paper
 colnames(mat)[22] <- "log2FoldChange"
-res5 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res5 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)
@@ -127,7 +127,7 @@ res5$plot
 ### logFC from Degs from DESeq2
 mat <- degs.dat[,c(1:22)]
 colnames(mat)[21] <- "gene.name"
-res6 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res6 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)
@@ -145,12 +145,12 @@ dat <- read.table("../dat/counts/GSE128178_10WT_10MeCP2_KO_chromatin_associated_
 chromatin.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
 mat <- chromatin.KO$results[,c(8:27,1,3)]
 colnames(mat)[21] <- "gene.name"
-grp.idx <- WTgrp_kmeans(control_mat = mat[,1:10])
+grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
 if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
 message("Cluster size is not equal, therefore run same size k-means variation!")
-    grp.idx <- WTgrp_kmeans_eqSize(control_mat = mat[,1:10])
+    grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
 }
-res7 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res7 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 200,
                         shift.size = 40)
@@ -177,7 +177,7 @@ colnames(mat)[21] <- "gene.name"
 ### logFC from Degs from edgeR (Boxer et al.) and
 ### much closer to the Boxer et al. paper
 colnames(mat)[22] <- "log2FoldChange"
-res8 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res8 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)
@@ -186,7 +186,7 @@ res8$plot
 ### logFC from Degs from DESeq2
 mat <- degs.dat[,c(1:22)]
 colnames(mat)[21] <- "gene.name"
-res9 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res9 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)

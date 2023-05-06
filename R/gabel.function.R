@@ -2,7 +2,7 @@
 #' Gabel Function
 #'
 #' @description
-#' Gabel's method or moving average method
+#' Gabel's method or moving average method for KO vs WT
 #'
 #' @param mat data
 #' @param length.type Gene
@@ -10,12 +10,16 @@
 #' @param y.axis Mean Log2 Fold Change
 #'
 #' @return Box plot
-#' @noRd
-#'
+#' @export
 #' @examples
-gabels.plot <- function(mat, length.type = "Gene", comp.between = "",
+#' # generate toy data
+#' b <- runif(1000, min=-2, max=2)
+#' c <- sample(2000:1000000, 1000, replace=TRUE)
+#' df <- data.frame(logFC.crude = b, gene.length = c)
+#' gabelsPlot(mat = df)
+gabelsPlot <- function(mat, length.type = "Gene", comp.between = "",
                         y.axis = "Mean Log2 Fold Change"){
-  p1 <- moving.average.function(dat = mat, bin.size = 200, shift.size = 40,
+  p1 <- movingAverageFunction(dat = mat, bin.size = 200, shift.size = 40,
                                 length.type, comp.between, y.axis)
   plot(p1)
 }
@@ -33,7 +37,7 @@ gabels.plot <- function(mat, length.type = "Gene", comp.between = "",
 #' @noRd
 #'
 #' @examples
-moving.average.function <- function(dat, bin.size, shift.size, length.type,
+movingAverageFunction <- function(dat, bin.size, shift.size, length.type,
                                     comp.between, y.axis){
   dat <- dat[order(dat[,2]),]
   dat[,2] <- dat[,2]/1000

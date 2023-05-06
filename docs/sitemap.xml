@@ -28,6 +28,9 @@
     <loc>/reference/gabels.plot.html</loc>
   </url>
   <url>
+    <loc>/reference/gabelsPlot.html</loc>
+  </url>
+  <url>
     <loc>/reference/GeneExpLevels.html</loc>
   </url>
   <url>
@@ -43,6 +46,12 @@
     <loc>/reference/logofMeans.between.ABC.html</loc>
   </url>
   <url>
+    <loc>/reference/logofMeansBetweenAB.html</loc>
+  </url>
+  <url>
+    <loc>/reference/logofMeansBetweenABC.html</loc>
+  </url>
+  <url>
     <loc>/reference/makeLab.html</loc>
   </url>
   <url>
@@ -52,6 +61,9 @@
     <loc>/reference/moving.average.function.html</loc>
   </url>
   <url>
+    <loc>/reference/overlapWrapper.html</loc>
+  </url>
+  <url>
     <loc>/reference/overlap_wrapper.html</loc>
   </url>
   <url>
@@ -59,6 +71,9 @@
   </url>
   <url>
     <loc>/reference/overlay.moving.average.function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/overlayGabelsPlot.html</loc>
   </url>
   <url>
     <loc>/reference/PCAplot.html</loc>
@@ -73,7 +88,16 @@
     <loc>/reference/studentt.test2.html</loc>
   </url>
   <url>
+    <loc>/reference/studentTest2.html</loc>
+  </url>
+  <url>
     <loc>/reference/t.test2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/WTgrpKmeans.html</loc>
+  </url>
+  <url>
+    <loc>/reference/WTgrpKmeansEqualSize.html</loc>
   </url>
   <url>
     <loc>/reference/WTgrp_kmeans.html</loc>

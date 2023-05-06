@@ -36,9 +36,9 @@
 #' mat <- wholeCell.KO$results[,c(8:27,1,3)]
 #' colnames(mat)[21] <- "gene.name"
 #' ## same cluster sizes
-#' grp.idx <- WTgrp_kmeans(control_mat = mat[,1:10])
+#' grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
 #' ## Generate overlap plots
-#' res1 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+#' res1 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
 #'                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
 #'                         WT2.idx = grp.idx$WT.idx2, bin.size = 200,
 #'                         shift.size = 40)
@@ -46,7 +46,7 @@
 #' }
 
 ## wrapper around overlap plots
-overlap_wrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
+overlapWrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
                             bin.size, shift.size, shrink_lfc = FALSE){
   dat.annot <- inner_join(x = dat, y = refseq, by = "gene.name")
   cat("Control Group 1:",WT1.idx,"\n")
@@ -57,7 +57,7 @@ overlap_wrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
                               function(r){log2((mean(r[WT1.idx]) + 1) /
                                                  (mean(r[WT2.idx]) +1))})
   if(shrink_lfc == FALSE){
-    log2FC.KO <- logofMeans.between.A.B(dat = dat.annot, A.samples = WT.idx,
+    log2FC.KO <- logofMeansBetweenAB(dat = dat.annot, A.samples = WT.idx,
                                         B.samples = KO.idx)
     log2FC.length <- inner_join(x = log2FC.WT[,c("gene.name","comp.mat")],
                                 y = log2FC.KO[,c("gene.name","logFC.crude",
@@ -70,7 +70,8 @@ overlap_wrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
                                                  "gene.length")],
                                 by = "gene.name")
   }
-  res <- overlay.gabels.plot(mat = log2FC.length[,c(2:4)],
+
+  res <- overlayGabelsPlot(mat = log2FC.length[,c(2:4)],
                              comp.between1 = "(WT/WT)",
                              comp.between2 = "(KO/WT)", bin.size, shift.size)
   plot.margin <- unit(c(1,0.5,0.5,0.5), "cm")
@@ -98,9 +99,9 @@ overlap_wrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
 #' @examples
 #' mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
 #' matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
-#' WTgrp_kmeans(control_mat = mat)
+#' WTgrpKmeans(control_mat = mat)
 ## original k-means
-WTgrp_kmeans <- function(control_mat, centers = 2, iter.max = 1000){
+WTgrpKmeans <- function(control_mat, centers = 2, iter.max = 1000){
   group <- kmeans(t(control_mat), centers, iter.max)$cluster
   idx1 <- which(group %in% 1)
   idx2 <- which(group %in% 2)
@@ -136,8 +137,8 @@ WTgrp_kmeans <- function(control_mat, centers = 2, iter.max = 1000){
 #' @examples
 #' mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
 #' matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
-#' WTgrp_kmeans(control_mat = mat)
-WTgrp_kmeans_eqSize <- function(control_mat, centers = 2, iter.max = 1000){
+#' WTgrpKmeans(control_mat = mat)
+WTgrpKmeansEqualSize <- function(control_mat, centers = 2, iter.max = 1000){
   size <- ceiling(nrow(t(control_mat))/centers)
   group <- kmeans(t(control_mat), centers, iter.max)
   new_group <- rep(NA, nrow(t(control_mat)))

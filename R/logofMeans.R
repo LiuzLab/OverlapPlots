@@ -12,10 +12,10 @@
 #' @examples
 #' dat <- matrix(rnorm(600, sd = 0.3), ncol = 6)
 #' dat <- as.data.frame(dat)
-#' logofMeans.between.A.B(dat = dat, A.samples = 1:3, B.samples = 4:6)
+#' logofMeansBetweenAB(dat = dat, A.samples = 1:3, B.samples = 4:6)
 #'
 
-logofMeans.between.A.B <- function(dat, A.samples, B.samples){
+logofMeansBetweenAB <- function(dat, A.samples, B.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})
   dat$Mean.B <- apply(dat[,B.samples], 1, function(r) {(mean(r))})
   dat$FC.crude <- apply(dat[,c("Mean.A", "Mean.B")], 1,
@@ -42,11 +42,11 @@ logofMeans.between.A.B <- function(dat, A.samples, B.samples){
 #' @examples
 #' dat <- matrix(rnorm(600, sd = 0.3), ncol = 9)
 #' dat <- as.data.frame(dat)
-#' logofMeans.between.ABC(dat = dat, A.samples = 1:3, B.samples = 4:6,
+#' logofMeansBetweenABC(dat = dat, A.samples = 1:3, B.samples = 4:6,
 #'  C.samples = 7:9)
 #'
 #'
-logofMeans.between.ABC <- function(dat, A.samples, B.samples, C.samples){
+logofMeansBetweenABC <- function(dat, A.samples, B.samples, C.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})
   dat$Mean.B <- apply(dat[,B.samples], 1, function(r) {(mean(r))})
   dat$Mean.C <- apply(dat[,C.samples], 1, function(r) {(mean(r))})
@@ -80,7 +80,7 @@ log2FCwithingenotypes <- function(dat){
     if(j > i){
       sample1 <- colnames(dat[,c(i,j)])
       sample2 <- colnames(dat[,-c(i,j)])
-      dat.mean <- logofMeans.between.A.B(dat = dat, A.samples = sample2,
+      dat.mean <- logofMeansBetweenAB(dat = dat, A.samples = sample2,
                                          B.samples = sample1)
       log2FC.dat <- cbind(log2FC.dat, dat.mean$logFC.crude)
     }

@@ -1,7 +1,7 @@
 ## DESeq Run
 #' DESeqCalculation
 #' @description
-#'
+#' "DESeq" wrapper to help the user to get count data.
 #' "DESeqCalculation" takes RNAseq exon counts data and genotypes. Performs
 #' intermediate calculations and results of differential gene expression
 #' analysis. Generates boxplots showing gene expression distributions per
@@ -40,14 +40,6 @@
 #'
 #' # Run Differential Analysis
 #' DESeqCalculation(dat = dat,genotypes = genotypes, fc = 1.15)
-#'
-#' \dontrun{
-#' genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-#' dat <- read.table(paste("../../dat/counts/GSE128178_10WT",
-#' "_10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt"),
-#' sep = "\t", stringsAsFactors=FALSE, header = TRUE, row.names = 1)
-#' wholeCell.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
-#' }
 
 
 DESeqCalculation <- function(dat, genotypes, fc = 1.15){

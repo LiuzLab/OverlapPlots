@@ -175,11 +175,11 @@ makeLab = function(x,pc) {
 #' @noRd
 #'
 #' @examples
-#' \dontrun{Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR",
+#' \dontrun{plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR",
 #' "gene.length")],
 #' log2FC = log2(1), comp.between = "")}
 ## Scatter Plot for DEGs
-Plot.Scatter <-function(dat, log2FC, comp.between, pval = 0.05){
+plotScatter <-function(dat, log2FC, comp.between, pval = 0.05){
   colnames(dat) <- c("gene.name", "logFC", "adj.P.Val", "gene.length")
   gene.type <- ifelse((dat$adj.P.Val < pval & abs(dat$logFC) > log2FC),
                       ifelse(dat$gene.length > 100e3, "Long Genes",
@@ -234,7 +234,7 @@ Plot.Scatter <-function(dat, log2FC, comp.between, pval = 0.05){
 #'
 #' @examples
 ## Scatter Plot with lm line
-scatter.lm <- function(dat){
+scatterlm <- function(dat){
   r.sq <- paste("R^2 = ",format(summary(lm(gene.length ~ logFC.crude,
                                            dat))$r.squared, digits = 2))
   print(summary(lm(gene.length ~ logFC.crude, dat)))

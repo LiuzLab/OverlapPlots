@@ -1,23 +1,36 @@
 ## overlay plot
 #' Overlay Gabel's plot
 #'
-#' @param mat data
+#' @param mat dataframe with first column corresponding to comp.mat, second
+#' column to log FC, and third columns to gene length.
 #' @param bin.size bin size
 #' @param shift.size shift size
 #' @param comp.between1 comp between
 #' @param comp.between2 comp between
+#' @param confidenceinterval Confidence interval to be displayed on plots
 #'
 #' @return gabels plot
-#' @noRd
-#'
+#' @export
 #' @examples
-overlay.gabels.plot <- function(mat, bin.size = 200, shift.size = 40,
-                                comp.between1 = "", comp.between2 = ""){
+#' # generate toy data
 
-  p1 <- overlay.moving.average.function(dat = mat, bin.size, shift.size,
-                                        comp.between1, comp.between2)
+#' a <- runif(1000, min=-2, max=2)
+#' b <- runif(1000, min=-2, max=2)
+#' c <- sample(2000:1000000, 1000, replace=TRUE)
+#' df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c)
+#' overlayGabelsPlot(mat = df,comp.between1 = "(WT/WT)",
+#' comp.between2 = "(KO/WT)",bin.size = 200,
+#' shift.size = 40, confidenceinterval=0.50)
+overlayGabelsPlot <- function(mat, bin.size = 200, shift.size = 40,
+                                comp.between1 = "", comp.between2 = "", confidenceinterval = 0.50){
+
+  p1 <- overlayMovingAverageFunction(dat = mat, bin.size, shift.size,
+                                        comp.between1, comp.between2, confidenceinterval)
   return(p1)
 }
+
+
+
 #' Overlay Gabel's moving average function
 #'
 #' @param dat matrix
@@ -25,13 +38,14 @@ overlay.gabels.plot <- function(mat, bin.size = 200, shift.size = 40,
 #' @param shift.size shift size
 #' @param comp.between1 comp between
 #' @param comp.between2 comp between
+#' @param confidenceinterval Confidence interval to be displayed on plots
 #'
 #' @return overlay ggplots objects
 #' @noRd
 #'
 #' @examples
-overlay.moving.average.function <- function(dat, bin.size, shift.size,
-                                            comp.between1, comp.between2){
+overlayMovingAverageFunction <- function(dat, bin.size, shift.size,
+                                            comp.between1, comp.between2, confidenceinterval){
   dat <- dat[order(dat$gene.length),]
   dat$gene.length <- dat$gene.length/1000
 
@@ -94,9 +108,10 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
     mean.points$mat.mean1 = -mean.points$mat.mean1
   }
 
-  ## calculating the p-value using studentt.test2
+  ## calculating the p-value using studentTest2
+
   mean.points$pval <- apply(mean.points, 1, function(r){
-    studentt.test2(m1 = r[1], m2 = r[2],
+    studentTest2(m1 = r[1], m2 = r[2],
             s1 = r[3], s2 = r[4], n1 = r[5])})
   mean.points$pval.log10 <- -log10(mean.points$pval)
 
@@ -111,11 +126,11 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
               linewidth = 1) +
     ylab(paste("Mean Log2FC")) + theme_bw() +
     scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +
-    geom_ribbon(aes(ymin=(mat.mean1-(mat.sd.1*0.50)),
-                    ymax=(mat.mean1+(mat.sd.1*0.50)),
+    geom_ribbon(aes(ymin=(mat.mean1-(mat.sd.1*confidenceinterval)),
+                    ymax=(mat.mean1+(mat.sd.1*confidenceinterval)),
                     x = mat.length, fill = col1), alpha=.25) +
-    geom_ribbon(aes(ymin=(mat.mean2-(mat.sd.2*0.50)),
-                    ymax=(mat.mean2+(mat.sd.2*0.50)),
+    geom_ribbon(aes(ymin=(mat.mean2-(mat.sd.2*confidenceinterval)),
+                    ymax=(mat.mean2+(mat.sd.2*confidenceinterval)),
                     x = mat.length, fill = col2), alpha=.25) +
     theme(## legend.text = element_text(size = 14, face = "bold"),
       axis.title.y = element_text(size = 24, face = "bold", color = "black"),
@@ -194,12 +209,24 @@ overlay.moving.average.function <- function(dat, bin.size, shift.size,
 #' Default is FALSE.
 #'
 #' @return p-values
-#' @noRd
+#' @export
 #'
 #' @examples
-studentt.test2 <- function(m1,m2,s1,s2,n1,n2=n1,m0=0,equal.variance=FALSE){
+#' a <- runif(30, min=-0.2, max=0.2)
+#' b <- runif(30, min=-0.2, max=0.2)
+#' astd <- runif(30, min=1, max=1.2)
+#' bstd <- runif(30, min=1.3, max=1.5)
+#' binwidth <- rep(c(200), each = 30)
+#' length <- runif(30, min=100, max=900)
+#' df <- data.frame(mat.mean1 = a, mat.mean2 = b, mat.sd.1 = astd,
+#' mat.sd.2 = bstd, bin.width = binwidth, mat.length = length)
+#' r <- as.matrix(df)
+#' r$pval <- apply(r, 1, function(r){
+#' studentTest2(m1 = r[1], m2 = r[2],
+#'             s1 = r[3], s2 = r[4], n1 = r[5])})
+studentTest2 <- function(m1,m2,s1,s2,n1,n2=n1,m0=0,equal.variance=FALSE){
   if(equal.variance==FALSE){
-    se <- sqrt( (s1^2/n1) + (s2^2/n2))
+    se <- sqrt(abs((s1^2/n1) + (s2^2/n2)))
     df <- ((s1^2/n1 + s2^2/n2)^2)/((s1^2/n1)^2/(n1-1) + (s2^2/n2)^2/(n2-1))
   }
   else{
@@ -207,6 +234,8 @@ studentt.test2 <- function(m1,m2,s1,s2,n1,n2=n1,m0=0,equal.variance=FALSE){
     df <- n1+n2-2
   }
   t <- (m1-m2-m0)/se
+  print(t)
+  print(df)
   pval <- 2*pt(-abs(t),df)
   return(pval)
 }

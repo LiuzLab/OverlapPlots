@@ -73,12 +73,12 @@ colnames(mat)[21] <- "gene.name"
 ```
 Run k-means clustering to obtained the different WT groups
 ```{r}
-grp.idx <- WTgrp_kmeans(control_mat = mat[,1:10])
+grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
 
 ```
 Plot running average figure with wrapper function
 ```{r}
-res1 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res1 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 200,
                         shift.size = 40)
@@ -101,9 +101,9 @@ degs.dat <- inner_join(degs.dat %>% rownames_to_column(var = "gene.name"),
 ```
 Generate scatter plots of log fold change vs gene length.
 ```{r}
-Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
+plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
              log2FC = log2(1), comp.between = "")
-Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
+plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
              log2FC = log2(1.2), comp.between = "")
 degs.dat <- inner_join(x = wholeCell.KO$results[wholeCell.KO$results$gene %in%
                                                 degs.dat$gene.name,c(8:27,1,3)],
@@ -116,7 +116,7 @@ colnames(mat)[21] <- "gene.name"
 logFC from Degs from edgeR (Boxer et al.)
 ```{r}
 colnames(mat)[22] <- "log2FoldChange"
-res2 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res2 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 60,
                         shift.size = 6, shrink_lfc = TRUE)
@@ -127,7 +127,7 @@ logFC from Degs from DESeq2
 ```{r}
 mat <- degs.dat[,c(1:22)]
 colnames(mat)[21] <- "gene.name"
-res3 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res3 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 60,
                         shift.size = 6, shrink_lfc = TRUE)
@@ -151,15 +151,15 @@ colnames(mat)[21] <- "gene.name"
 ```
 Run k-means clustering on control (WT)
 ```{r}
-grp.idx <- WTgrp_kmeans(control_mat = mat[,1:10])
+grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
 if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
 message("Cluster size is not equal, therefore run same size k-means variation!")
-    grp.idx <- WTgrp_kmeans_eqSize(control_mat = mat[,1:10])
+    grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
 }
 ```
 Plot running average figure with wrapper function
 ```{r}
-res4 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res4 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 200,
                         shift.size = 40)
@@ -178,9 +178,9 @@ degs.dat <- inner_join(degs.dat %>% rownames_to_column(var = "gene.name"),
 ```
 Generate scatter plots of log fold change vs gene length.
 ```{r}
-Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
+plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
              log2FC = log2(1), comp.between = "")
-Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
+plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
              log2FC = log2(1.2), comp.between = "")
 degs.dat <- inner_join(x = nuclear.KO$results[nuclear.KO$results$gene %in%
                                               degs.dat$gene.name,c(8:27,1,3)],
@@ -193,7 +193,7 @@ colnames(mat)[21] <- "gene.name"
 logFC from Degs from edgeR (Boxer et al.)
 ```{r}
 colnames(mat)[22] <- "log2FoldChange"
-res5 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res5 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)
@@ -203,7 +203,7 @@ logFC from Degs from DESeq2
 ```{r}
 mat <- degs.dat[,c(1:22)]
 colnames(mat)[21] <- "gene.name"
-res6 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res6 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)
@@ -222,16 +222,16 @@ colnames(mat)[21] <- "gene.name"
 ```
 Run k-means clustering on control (WT) group
 ```{r}
-grp.idx <- WTgrp_kmeans(control_mat = mat[,1:10])
+grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
 if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
 message("Cluster size is not equal, therefore run same size k-means variation!")
-    grp.idx <- WTgrp_kmeans_eqSize(control_mat = mat[,1:10])
+    grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
 }
 
 ```
 Plot running average figure with wrapper function
 ```{r}
-res7 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res7 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 200,
                         shift.size = 40)
@@ -250,9 +250,9 @@ degs.dat <- inner_join(degs.dat %>% rownames_to_column(var = "gene.name"),
 ```
 Generate scatter plots of log fold change vs gene length.
 ```{r}
-Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
+plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
              log2FC = log2(1), comp.between = "")
-Plot.Scatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
+plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR", "gene.length")],
              log2FC = log2(1.2), comp.between = "")
 degs.dat <- inner_join(x = chromatin.KO$results[chromatin.KO$results$gene %in%
                                                 degs.dat$gene.name,c(8:27,1,3)],
@@ -265,7 +265,7 @@ colnames(mat)[21] <- "gene.name"
 logFC from Degs from edgeR (Boxer et al.)
 ```{r}
 colnames(mat)[22] <- "log2FoldChange"
-res8 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res8 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)
@@ -275,7 +275,7 @@ logFC from Degs from DESeq2
 ```{r}
 mat <- degs.dat[,c(1:22)]
 colnames(mat)[21] <- "gene.name"
-res9 <- overlap_wrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+res9 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
                         WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
                         WT2.idx = grp.idx$WT.idx2, bin.size = 40,
                         shift.size = 4, shrink_lfc = TRUE)
