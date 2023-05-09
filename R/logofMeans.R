@@ -65,8 +65,6 @@ logofMeansBetweenABC <- function(dat, A.samples, B.samples, C.samples){
 #'
 #' @return log2 fold change between genotypes
 #' @noRd
-#'
-#' @examples
 ## log2FC between genotypes
 log2FCwithingenotypes <- function(dat){
 

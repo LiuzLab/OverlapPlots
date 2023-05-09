@@ -2,7 +2,7 @@
 #' Gabel Function
 #'
 #' @description
-#' Gabel's method or moving average method for KO vs WT
+#' Gabel's method or moving average method for KO vs WT.
 #'
 #' @param mat data
 #' @param length.type Gene
@@ -35,8 +35,6 @@ gabelsPlot <- function(mat, length.type = "Gene", comp.between = "",
 #'
 #' @return ggplot object
 #' @noRd
-#'
-#' @examples
 movingAverageFunction <- function(dat, bin.size, shift.size, length.type,
                                     comp.between, y.axis){
   dat <- dat[order(dat[,2]),]
@@ -71,8 +69,8 @@ movingAverageFunction <- function(dat, bin.size, shift.size, length.type,
   ## colors used for moving average plots
   col1 <- "#000000"
   col2 <- "#1E90FF"
-  ind = mean.points$mat.length >=1 & mean.points$mat.length <=1000
-  mean.points = mean.points[ind, ]
+  ind <- mean.points$mat.length >=1 & mean.points$mat.length <=1000
+  mean.points <- mean.points[ind, ]
   plot1 <- ggplot(data = mean.points, aes(x = mat.length, y = mat.mean)) +
     geom_point(size = 1.5, colour = col2) + geom_line(size=1, color = col1) +
     scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +

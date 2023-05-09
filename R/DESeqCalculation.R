@@ -136,8 +136,7 @@ DESeqCalculation <- function(dat, genotypes, fc = 1.15){
       points(topGenes$baseMean, topGenes$log2FoldChange, col="dodgerblue",
              cex=2, lwd=2)
       text(topGenes$baseMean, topGenes$log2FoldChange, topGenes$genes,
-           pos=2, col="dodgerblue")})
-  }
+           pos=2, col="dodgerblue")})}
 
   ## Volcano Plot
   results <- results %>% tibble::rownames_to_column()
@@ -219,7 +218,7 @@ DESeqCalculation <- function(dat, genotypes, fc = 1.15){
   print(p6)
 
   ## DEGs plot
-  results.list = list(results = results, up.reg = up.reg, down.reg = down.reg,
+  results.list <- list(results = results, up.reg = up.reg, down.reg = down.reg,
                       counts = dat, plots = list(sizefactorPlot = p1,
                       PCAplot_rld = p2, PCAplot = p3, MDSplot = p4,
                       Volplot = p5, PCAplot_highvar = p6, heatmap1 = p1.top,

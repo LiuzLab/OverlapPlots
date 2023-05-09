@@ -24,7 +24,7 @@ gabelsPlot(
 Box plot
 }
 \description{
-Gabel's method or moving average method for KO vs WT
+Gabel's method or moving average method for KO vs WT.
 }
 \examples{
 # generate toy data

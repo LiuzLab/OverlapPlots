@@ -6,8 +6,6 @@
 #'
 #' @return boxplot
 #' @noRd
-#'
-#' @examples
 boxPlot <- function(data, samples){
   par(mar=c(2+round(max(nchar(colnames(data)))/2),4,2,1),font=2)
   boxplot(data, boxwex=0.6, notch=TRUE, outline=FALSE, las=2, col=samples)
@@ -24,8 +22,6 @@ boxPlot <- function(data, samples){
 #'
 #' @return ggplot object with gene expression levels
 #' @noRd
-#'
-#' @examples
 ## Gene Expression Level in Microarray data
 GeneExpLevels <- function(data, gene.id, genotypes){
 
@@ -39,15 +35,15 @@ GeneExpLevels <- function(data, gene.id, genotypes){
   print(ggplot(plotDat, aes(x = sampleName, y = normCounts, fill = genotype)) +
           geom_bar(stat="identity") + ylab("Log2 Normalized Data") +
           ggtitle(paste("Barplot for Gene ",gene.id[2],sep="")) + theme_bw() +
-          facet_grid(. ~ Genotype_Condition,  space = "free", scale="free") +
+          facet_grid(. ~ Genotype_Condition,  space = "free", scales="free") +
           theme(plot.title = element_text(size = 24, face = "bold"),
                 axis.title.y= element_text(size = 20, colour = "black",
                                            face = "bold"),
                 axis.text.y = element_text(size = 20, colour = "black",
                                            face = "bold"),
                 axis.text.x = element_blank(), legend.position="none",
-                axis.ticks.x = element_blank(), axis.title.x =  element_blank(),
-                strip.text = element_text(size = 18, colour = "red",
+                axis.ticks.x = element_blank(), axis.title.x =  element_blank()
+                , strip.text = element_text(size = 18, colour = "red",
                                           face = "bold")))
 }
 
@@ -60,8 +56,6 @@ GeneExpLevels <- function(data, gene.id, genotypes){
 #'
 #' @return ggplot obuect MDS plot
 #' @noRd
-#'
-#' @examples
 ## MDS Plot
 MDSplot <- function(data, genotypes, conditions){
   mdsDist = cmdscale(d = dist(t(data)), eig = TRUE, k = 2)
@@ -110,8 +104,6 @@ MDSplot <- function(data, genotypes, conditions){
 #'
 #' @return ggplot object PCA plot
 #' @noRd
-#'
-#' @examples
 ## PCA plot
 PCAplot <- function(data, genotypes, conditions){
   ## Calculating PC components
@@ -157,8 +149,6 @@ PCAplot <- function(data, genotypes, conditions){
 #'
 #' @return PC with its variance
 #' @noRd
-#'
-#' @examples
 makeLab = function(x,pc) {
   paste0("PC",pc,": ",x,"% variance")
 }
@@ -173,11 +163,6 @@ makeLab = function(x,pc) {
 #'
 #' @return scatter plot
 #' @noRd
-#'
-#' @examples
-#' \dontrun{plotScatter(dat = degs.dat[,c("gene.name","logFC", "FDR",
-#' "gene.length")],
-#' log2FC = log2(1), comp.between = "")}
 ## Scatter Plot for DEGs
 plotScatter <-function(dat, log2FC, comp.between, pval = 0.05){
   colnames(dat) <- c("gene.name", "logFC", "adj.P.Val", "gene.length")
@@ -231,8 +216,6 @@ plotScatter <-function(dat, log2FC, comp.between, pval = 0.05){
 #'
 #' @return Scatter plot
 #' @noRd
-#'
-#' @examples
 ## Scatter Plot with lm line
 scatterlm <- function(dat){
   r.sq <- paste("R^2 = ",format(summary(lm(gene.length ~ logFC.crude,

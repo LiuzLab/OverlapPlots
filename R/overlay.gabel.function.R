@@ -22,14 +22,13 @@
 #' comp.between2 = "(KO/WT)",bin.size = 200,
 #' shift.size = 40, confidenceinterval=0.50)
 overlayGabelsPlot <- function(mat, bin.size = 200, shift.size = 40,
-                                comp.between1 = "", comp.between2 = "", confidenceinterval = 0.50){
+                              comp.between1 = "", comp.between2 = "",
+                              confidenceinterval = 0.50){
 
   p1 <- overlayMovingAverageFunction(dat = mat, bin.size, shift.size,
-                                        comp.between1, comp.between2, confidenceinterval)
+                              comp.between1, comp.between2, confidenceinterval)
   return(p1)
 }
-
-
 
 #' Overlay Gabel's moving average function
 #'
@@ -42,10 +41,9 @@ overlayGabelsPlot <- function(mat, bin.size = 200, shift.size = 40,
 #'
 #' @return overlay ggplots objects
 #' @noRd
-#'
-#' @examples
 overlayMovingAverageFunction <- function(dat, bin.size, shift.size,
-                                            comp.between1, comp.between2, confidenceinterval){
+                                         comp.between1, comp.between2,
+                                         confidenceinterval){
   dat <- dat[order(dat$gene.length),]
   dat$gene.length <- dat$gene.length/1000
 
@@ -234,8 +232,6 @@ studentTest2 <- function(m1,m2,s1,s2,n1,n2=n1,m0=0,equal.variance=FALSE){
     df <- n1+n2-2
   }
   t <- (m1-m2-m0)/se
-  print(t)
-  print(df)
   pval <- 2*pt(-abs(t),df)
   return(pval)
 }
