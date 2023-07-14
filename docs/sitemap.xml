@@ -67,6 +67,9 @@
     <loc>/reference/moving.average.function.html</loc>
   </url>
   <url>
+    <loc>/reference/overlapDegsmCAWrapper.html</loc>
+  </url>
+  <url>
     <loc>/reference/overlapWrapper.html</loc>
   </url>
   <url>
@@ -86,6 +89,9 @@
   </url>
   <url>
     <loc>/reference/overlayGabelsPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/overlaymC.html</loc>
   </url>
   <url>
     <loc>/reference/PCAplot.html</loc>

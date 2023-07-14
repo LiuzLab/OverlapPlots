@@ -13,11 +13,14 @@
 #' @importFrom cowplot plot_grid
 #' @importFrom details details
 #' @importFrom sessioninfo session_info
+#' @importFrom OpenRepGrid randomWords
+#' @importFrom utils read.table
 rafalib::mypar()
 globalVariables(c("x","y","log2FoldChange", "Significant",
                   "samples", "sampleName", "normCounts",
                   "genotype", "PC1", "PC2", "pval.log10", "logFC.crude",
-                  "gene.length"))
+                  "gene.length", "refseq", "gene.type", "variable",
+                  "value", "bin", "logFC"))
 
 
 

@@ -30,6 +30,7 @@ Imports:
     grDevices (>= 4.2.3),
     gridExtra (>= 2.3),
     matrixStats (>= 0.63.0),
+    OpenRepGrid,
     patchwork (>= 1.1.2),
     pheatmap (>= 1.0.12),
     rafalib (>= 1.0.0),

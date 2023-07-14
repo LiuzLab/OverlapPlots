@@ -3,7 +3,8 @@
 #' mC Overlay Plot
 #'
 #' @param mat dataframe with first column corresponding to comp.mat, second
-#' column to log FC, and third columns to gene length.
+#' column to log FC, and third columns to gene length, the forth column contains
+#'the mCA.CA values, and last columns the gene names.
 #' @param bin.size bin size
 #' @param shift.size shift size
 #' @param length.type length type
@@ -15,15 +16,42 @@
 #' @export
 #'
 #' @examples
-overlay.mC <- function(mat, bin.size = 200, shift.size = 40,
+#' # generate toy data
+
+#' a <- runif(1000, min=-2, max=2)
+#' b <- runif(1000, min=-2, max=2)
+#' d <- runif(1000, min=0, max=0.05)
+#' c <- sample(2000:1000000, 1000, replace=TRUE)
+#' genes <- OpenRepGrid::randomWords(1000)
+#' df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c, mCA.CA = d,
+#' gene.name = genes)
+#' overlaymC(mat = df,bin.size = 60, shift.size = 6, methyl.type = "mCA/CA")
+overlaymC <- function(mat, bin.size = 200, shift.size = 40,
                        length.type = "Gene", methyl.type = "",
                        comp.between1 = "", comp.between2 = ""){
-  p1 <- overlay.mC.function(dat = mat, bin.size, shift.size,
+  p1 <- overlaymCFunction(dat = mat, bin.size, shift.size,
                             length.type, methyl.type,
                             comp.between1, comp.between2)
   return(p1)
 }
-overlay.mC.function <- function(dat, bin.size, shift.size,
+
+
+#' Overlay mC function
+#'
+#' @param dat dataframe with first column corresponding to comp.mat, second
+#' column to log FC, and third columns to gene length, the forth column contains
+#'the mCA.CA values, and last columns the gene names.
+#' @param bin.size bin size
+#' @param shift.size shift size
+#' @param length.type length type
+#' @param methyl.type methylation type
+#' @param comp.between1 comp between
+#' @param comp.between2 comp between
+#'
+#' @return ggplot object
+#' @noRd
+
+overlaymCFunction <- function(dat, bin.size, shift.size,
                                 length.type, methyl.type,
                                 comp.between1, comp.between2){
   dat <- dat[order(dat$mCA.CA),]

@@ -181,7 +181,33 @@ WTgrpKmeansEqualSize <- function(control_mat, centers = 2, iter.max = 1000){
 #' @export
 #'
 #' @examples
-overlap_degs_mCA_wrapper <- function(degs.dat, count.dat, refseq, WT1.idx,
+#'\dontrun{
+#' ## load the workspace
+#' load(file = "../../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
+#' mCA <- data.frame(readRDS("../../dat/mCA/CAperGene_10wk_boxer.RDS"), stringsAsFactors = FALSE)
+#' mCA <- mCA[mCA$CA >= 5,]
+#' mCA <- mCA[mCA$gene.length >= 4500,]
+#' mCA$mCA.CA <- mCA$mCA/mCA$CA
+#' mCA1 <- mCA[,c(1,6,7)]
+#' ## mCA analysis for KO/WT in whole cell dataset
+#' degs.dat <- read.table("../../dat/DEGs/KO-WT_whole-cell_RNA-seq.txt", sep = "\t",
+#'                        stringsAsFactors = FALSE, header = TRUE, row.names = 1)
+#' mat <- wholeCell.KO$res$results[,c(8:27,1,3)]
+#' colnames(mat)[21] <- "gene.name"
+#' grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
+#' if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
+#'   message("Cluster size is not equal, therefore run same size k-means
+#'                 variation!")
+#'   grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
+#' }
+#' res1 <- overlapDegsmCAWrapper(degs.dat = degs.dat, count.dat = mat,
+#'                               refseq = mCA1, WT1.idx = grp.idx$WT.idx1,
+#'                               WT2.idx = grp.idx$WT.idx2, bin.size = 60,
+#'                               shift.size = 6, methyl.type = "mCA/CA")
+#'
+#'}
+#'
+overlapDegsmCAWrapper <- function(degs.dat, count.dat, refseq, WT1.idx,
                                      WT2.idx, bin.size, shift.size, methyl.type,
                                      degs = TRUE){
   if(degs == TRUE){
@@ -203,7 +229,8 @@ overlap_degs_mCA_wrapper <- function(degs.dat, count.dat, refseq, WT1.idx,
                                               "gene.length","mCA.CA")],
                               by = "gene.name")
   message(dim(log2FC.length)[1])
-  res <- overlay.mC(mat = log2FC.length[,c(2:5,1)], comp.between1 = "(WT/WT)",
+  print(log2FC.length[,c(2:5,1)])
+  res <- overlaymC(mat = log2FC.length[,c(2:5,1)], comp.between1 = "(WT/WT)",
                     comp.between2 = "(KO/WT)", bin.size = bin.size,
                     shift.size = shift.size, methyl.type = methyl.type)
   return(res = res)

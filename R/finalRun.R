@@ -8,9 +8,8 @@
 #' @param title dataset title
 #'
 #' @return main analysis plots
-#' @export
+#' @noRd
 #'
-#' @examples
 finalRun <- function(count.file, genotypes, degs.file, bin.size, shift.size,
                      title = "MeCP2 KO"){
   ## counts file

@@ -125,10 +125,11 @@ if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
                 variation!")
     grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
 }
-res1 <- overlap_degs_mCA_wrapper(degs.dat = degs.dat, count.dat = mat,
+res1 <- overlapDegsmCAWrapper(degs.dat = degs.dat, count.dat = mat,
                                  refseq = mCA1, WT1.idx = grp.idx$WT.idx1, 
                                  WT2.idx = grp.idx$WT.idx2, bin.size = 60, 
                                  shift.size = 6, methyl.type = "mCA/CA")
+
 p1 <- (res1$plot1 + coord_cartesian(ylim = c(-0.25,0.25))) / res1$plot2 / res1$plot4
 rm(wholeCell.KO, degs.dat, mat)
 
@@ -144,7 +145,7 @@ if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
                 variation!")
     grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
 }
-res2 <- overlap_degs_mCA_wrapper(degs.dat, count.dat = mat, refseq = mCA1, 
+res2 <- overlapDegsmCAWrapper(degs.dat, count.dat = mat, refseq = mCA1, 
                                  WT1.idx = grp.idx$WT.idx1, 
                                  WT2.idx = grp.idx$WT.idx2, bin.size = 40, 
                                  shift.size = 4, methyl.type = "mCA/CA")
