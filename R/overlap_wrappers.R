@@ -17,6 +17,7 @@
 #' @param WT2.idx WT2 index
 #' @param bin.size bin size
 #' @param shift.size shift size
+#' @param confidenceinterval CI
 #' @param shrink_lfc Shrink log2 fold changes
 #'
 #' @return results and plots
@@ -47,7 +48,8 @@
 
 ## wrapper around overlap plots
 overlapWrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
-                            bin.size, shift.size, shrink_lfc = FALSE){
+                            bin.size, shift.size, confidenceinterval = 0.50,
+                           shrink_lfc = FALSE){
   dat.annot <- inner_join(x = dat, y = refseq, by = "gene.name")
   cat("Control Group 1:",WT1.idx,"\n")
   cat("Control Group 2:",WT2.idx,"\n")
@@ -73,7 +75,8 @@ overlapWrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
 
   res <- overlayGabelsPlot(mat = log2FC.length[,c(2:4)],
                              comp.between1 = "(WT/WT)",
-                             comp.between2 = "(KO/WT)", bin.size, shift.size)
+                             comp.between2 = "(KO/WT)", bin.size, shift.size,
+                           confidenceinterval)
   plot.margin <- unit(c(1,0.5,0.5,0.5), "cm")
   res.plot <- plot_grid(res$plot1 + coord_cartesian(ylim = c(-0.4,0.4)),
                         res$plot2 + coord_cartesian(ylim = c(0,50)), ncol = 1,
@@ -160,3 +163,49 @@ WTgrpKmeansEqualSize <- function(control_mat, centers = 2, iter.max = 1000){
   idx2 <- which(new_group %in% 2)
   return(list(WT.idx1 = idx1, WT.idx2 = idx2))
 }
+
+
+#' wrapper around Overlap plots for DEGs mCA
+#'
+#' @param degs.dat DEGs data
+#' @param count.dat counts data
+#' @param refseq reference sequence
+#' @param WT1.idx WT1 index
+#' @param WT2.idx WT2 index
+#' @param bin.size bin size
+#' @param shift.size shift size
+#' @param methyl.type methylation type
+#' @param degs DEGs
+#'
+#' @return Overlay mC plots
+#' @export
+#'
+#' @examples
+overlap_degs_mCA_wrapper <- function(degs.dat, count.dat, refseq, WT1.idx,
+                                     WT2.idx, bin.size, shift.size, methyl.type,
+                                     degs = TRUE){
+  if(degs == TRUE){
+    degs.dat <- degs.dat[degs.dat$FDR < 0.05,]
+  }
+  cat("Number of genes =",dim(degs.dat)[1],"\n\n")
+  degs.dat <- inner_join(degs.dat %>% rownames_to_column(var = "gene.name"),
+                         refseq, #%>% rownames_to_column(var = "gene.name"),
+                         by = "gene.name")
+  ## overlap plot
+  cat("Control Group 1:",WT1.idx,"\n")
+  cat("Control Group 2:",WT2.idx,"\n")
+  log2FC.WT <- data.frame(count.dat[,c(1:10, 21)], stringsAsFactors = FALSE)
+  log2FC.WT$comp.mat <- apply(count.dat[,c(WT1.idx, WT2.idx)], 1,
+                              function(r){log2((mean(r[1:length(WT1.idx)])+1) /
+                                                 (mean(r[(length(WT1.idx)+1):10])+1))})
+  log2FC.length <- inner_join(x = log2FC.WT[,c("gene.name","comp.mat")],
+                              y = degs.dat[,c("gene.name","logFC",
+                                              "gene.length","mCA.CA")],
+                              by = "gene.name")
+  message(dim(log2FC.length)[1])
+  res <- overlay.mC(mat = log2FC.length[,c(2:5,1)], comp.between1 = "(WT/WT)",
+                    comp.between2 = "(KO/WT)", bin.size = bin.size,
+                    shift.size = shift.size, methyl.type = methyl.type)
+  return(res = res)
+}
+

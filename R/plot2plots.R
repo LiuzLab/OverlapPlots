@@ -164,7 +164,7 @@ makeLab = function(x,pc) {
 #' @return scatter plot
 #' @noRd
 ## Scatter Plot for DEGs
-plotScatter <-function(dat, log2FC, comp.between, pval = 0.05){
+plotScatter <- function(dat, log2FC, comp.between, pval = 0.05){
   colnames(dat) <- c("gene.name", "logFC", "adj.P.Val", "gene.length")
   gene.type <- ifelse((dat$adj.P.Val < pval & abs(dat$logFC) > log2FC),
                       ifelse(dat$gene.length > 100e3, "Long Genes",
@@ -185,9 +185,9 @@ plotScatter <-function(dat, log2FC, comp.between, pval = 0.05){
   print(cont.tab)
 
   ## qplot
-  print(qplot(y = dat$logFC, x = dat$gene.length/1000, colour = gene.type,
-      xlab = "Gene Length in KB", ylab = paste("Log2 Fold Change",
-                                               comp.between)) +
+  print(ggplot(data = dat, aes(y = logFC, x = gene.length/1000,
+      colour = gene.type)) + geom_point(size = 1) + xlab("Gene Length in KB") +
+                ylab(paste("Log2 Fold Change", comp.between)) +
       scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +
       coord_cartesian(ylim = c(-1.5,1.5)) + theme_bw() +
       annotate("text", x = 500, y=1.5, label= cont.tab[1,1], size=7,

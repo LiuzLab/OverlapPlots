@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/Analysis.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -23,6 +26,9 @@
   </url>
   <url>
     <loc>/reference/DESeqCalculation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/finalRun.html</loc>
   </url>
   <url>
     <loc>/reference/gabels.plot.html</loc>
@@ -64,10 +70,16 @@
     <loc>/reference/overlapWrapper.html</loc>
   </url>
   <url>
+    <loc>/reference/overlap_degs_mCA_wrapper.html</loc>
+  </url>
+  <url>
     <loc>/reference/overlap_wrapper.html</loc>
   </url>
   <url>
     <loc>/reference/overlay.gabels.plot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/overlay.mC.html</loc>
   </url>
   <url>
     <loc>/reference/overlay.moving.average.function.html</loc>

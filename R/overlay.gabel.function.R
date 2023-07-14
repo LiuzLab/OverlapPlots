@@ -161,7 +161,7 @@ overlayMovingAverageFunction <- function(dat, bin.size, shift.size,
       geom_line(linewidth = 0.4, colour = "gray70") +
       geom_point(size = 2, color = gene.type) +
       geom_hline(aes(yintercept = y.int),
-                 colour="#FF0000", linetype="dashed", size = 1) +
+                 colour="#FF0000", linetype="dashed", linewidth = 1) +
       scale_x_continuous(trans = log10_trans(),
                          breaks = c(0,1,10,100,1000)) +
       xlab(paste("Mean Gene Length in KB")) +
@@ -180,7 +180,7 @@ overlayMovingAverageFunction <- function(dat, bin.size, shift.size,
       scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +
       xlab(paste("Mean Gene Length in KB")) + ylab(paste("-Log10(pvalue)")) +
       geom_hline(aes(yintercept = y.int), colour="#FF0000",
-                 linetype="dashed", size = 1) + theme_bw() +
+                 linetype="dashed", linewidth = 1) + theme_bw() +
       theme(axis.title = element_text(size = 24, face = "bold"),
             axis.text.x = element_text(size = 24, face = "bold",
                                        color = "black"),

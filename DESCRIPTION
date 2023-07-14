@@ -37,6 +37,7 @@ Imports:
     scales (>= 1.2.1),
     sessioninfo (>= 1.2.2),
     stats (>= 4.2.3),
+    stringi (>= 1.7.12),
     SummarizedExperiment (>= 1.26.1),
     tibble (>= 3.1.8),
     utils (>= 4.2.3)

@@ -13,6 +13,7 @@ overlapWrapper(
   WT2.idx,
   bin.size,
   shift.size,
+  confidenceinterval = 0.5,
   shrink_lfc = FALSE
 )
 }
@@ -32,6 +33,8 @@ overlapWrapper(
 \item{bin.size}{bin size}
 
 \item{shift.size}{shift size}
+
+\item{confidenceinterval}{CI}
 
 \item{shrink_lfc}{Shrink log2 fold changes}
 }
