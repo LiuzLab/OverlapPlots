@@ -86,3 +86,41 @@ finalRun <- function(count.file, genotypes, degs.file, bin.size, shift.size,
                                              degs_edgeR = op2, degs_deseq2 = op3), scatterPlot1 = scater1,
               scatterPlot2 = scater2))
 }
+
+
+#' Main analysis function for mCA
+#'
+#' @param count.file whole cell RNAseq exon counts counts .txt format
+#' @param degs.file whole cell RNA seq DEGs .txt file
+#' @param mCA mCA data
+#' @param bin.size bin size integer
+#' @param shift.size shift size integer
+#' @param title dataset title
+#'
+#' @return main analysis plots for mCA
+#' @noRd
+
+finalRunmCA <- function(count.file, degs.file, mCA, bin.size, shift.size,
+                         title = "MeCP2 KO"){
+  degs.dat <- read.table(file = degs.file, sep = "\t", stringsAsFactors = FALSE,
+                         header = TRUE, row.names = 1)
+  count.file <- count.file[,c(8:27,1,3)]
+  colnames(count.file)[21] <- "gene.name"
+  grp.idx <- WTgrpKmeans(control_mat = count.file[,1:10])
+  if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
+    message("Cluster size is not equal, therefore run same size k-means
+                variation!")
+    grp.idx <- WTgrpKmeansEqualSize(control_mat = count.file[,1:10])
+  }
+  res <- overlapDegsmCAWrapper(degs.dat = degs.dat, count.dat = count.file,
+                                  refseq = mCA, WT1.idx = grp.idx$WT.idx1,
+                                  WT2.idx = grp.idx$WT.idx2,
+                                  bin.size = bin.size,
+                                  shift.size = shift.size,
+                                  methyl.type = "mCA/CA")
+  comb.plot <- ((res$overlapPlot + coord_cartesian(ylim = c(-0.25,0.25))) /
+                  res$mCAvGl_plot) | (res$plotBar / res$diffPlot)
+  comb.plot <- comb.plot + plot_annotation(title = title, theme = theme(
+    plot.title = element_text(size = 18, hjust = 0.5, face = "bold")))
+  return(list(res = res, combined = comb.plot))
+}

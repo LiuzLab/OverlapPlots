@@ -51,8 +51,13 @@ print(getwd())
 Load annotation dataset reference sequence gene
 ```{r}
 load(file = "../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
+load(file = "../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-
+mCA <- data.frame(readRDS("../dat/mCA/CAperGene_10wk_boxer.RDS"), stringsAsFactors = FALSE)
+mCA <- mCA[mCA$CA >= 5,]
+mCA <- mCA[mCA$gene.length >= 4500,]
+mCA$mCA.CA <- mCA$mCA/mCA$CA
+mCA.sub <- mCA[,c(1,6,7)]
 ```
 overlap plots -- mean(log2FC) vs mean(gene length)
 ```{r}
@@ -63,6 +68,12 @@ bin.size <- 60
 shift.size <- 6
 wholeCell.KO <- finalRun(count.file, genotypes, degs.file, bin.size, shift.size,
                          title = "KO/WT whole cell dataset")
+mCA.wholeCell.KO <- finalRunmCA(wholeCell.KO$res$results, degs.file, mCA.sub, 
+                                 bin.size, shift.size, 
+                                 title = "KO/WT whole cell dataset")
+wholeCell.KO$overlapPlots$combined
+mCA.wholeCell.KO$combined
+rm(count.file, degs.file)
 
 ## KO/WT nuclear dataset  (ref: Fig 2E Boxer et al. Mol Cell 2020)
 count.file <- "../dat/counts/GSE128178_10WT_10MeCP2_KO_nuclear_RNAseq_gene_body_counts.txt"
@@ -71,6 +82,12 @@ bin.size <- 40
 shift.size <- 4
 nuclear.KO <- finalRun(count.file, genotypes, degs.file, bin.size, shift.size,
                        title = "KO/WT nuclear dataset")
+mCA.nuclear.KO <- finalRunmCA(nuclear.KO$res$results, degs.file, mCA.sub, 
+                               bin.size, shift.size, 
+                               title = "KO/WT nuclear dataset")
+nuclear.KO$overlapPlots$combined
+mCA.nuclear.KO$combined
+rm(count.file, degs.file)
 
 ## KO/WT chromatin dataset (ref: Fig 2F Boxer et al. Mol Cell 2020)
 count.file <- "../dat/counts/GSE128178_10WT_10MeCP2_KO_chromatin_associated_RNAseq_gene_body_counts.txt"
@@ -79,6 +96,12 @@ bin.size <- 40
 shift.size <- 4
 chromatin.KO <- finalRun(count.file, genotypes, degs.file, bin.size, shift.size,
                          title = "KO/WT chromatin dataset")
+mCA.chromatin.KO <- finalRunmCA(chromatin.KO$res$results, degs.file, mCA.sub, 
+                                 bin.size, shift.size, 
+                                 title = "KO/WT chromatin dataset")
+chromatin.KO$overlapPlots$combined
+mCA.chromatin.KO$combined
+rm(count.file, degs.file)
 
 ## R306C/WT whole cell dataset  (ref: Fig 3F Boxer et al. Mol Cell 2020)
 count.file <- "../dat/counts/GSE128178_10WT_10R306C_whole_cell_RNAseq_exon_counts.txt"
@@ -87,14 +110,26 @@ bin.size <- 40
 shift.size <- 4
 wholeCell.R306C <- finalRun(count.file, genotypes, degs.file, bin.size, 
                             shift.size, title = "R306C/WT whole cell dataset")
+mCA.wholeCell.R306C <- finalRunmCA(wholeCell.R306C$res$results, degs.file, 
+                                    mCA.sub, bin.size, shift.size,
+                                    title = "R306C/WT whole cell dataset")
+wholeCell.R306C$overlapPlots$combined
+mCA.wholeCell.R306C$combined
+rm(count.file, degs.file)
 
 ## R306C/WT nuclear dataset 
 count.file <- "../dat/counts/GSE128178_10WT_10R306C_nuclear_RNAseq_gene_body_counts.txt"
 degs.file <- "../dat/DEGs/R306C-WT_nuclear_RNA-seq.txt"
 bin.size <- 40
 shift.size <- 4
-nuclear.R306C <- finalRun(count.file, genotypes, degs.file, bin.size, 
+nuclear.R306C <- finalRun(count.file, genotypes, degs.file, bin.size,
                           shift.size, title = "R306C/WT nuclear dataset")
+mCA.nuclear.R306C <- finalRunmCA(nuclear.R306C$res$results, degs.file, mCA.sub, 
+                                  bin.size, shift.size, 
+                                  title = "R306C/WT nuclear dataset")
+nuclear.R306C$overlapPlots$combined
+mCA.nuclear.R306C$combined
+rm(count.file, degs.file)
 
 ## R306C/WT chromatin dataset
 count.file <- "../dat/counts/GSE128178_10WT_10R306C_chromatin_associated_RNAseq_gene_body_counts.txt"
@@ -103,53 +138,11 @@ bin.size <- 40
 shift.size <- 4
 chromatin.R306C <- finalRun(count.file, genotypes, degs.file, bin.size, 
                             shift.size, title = "R306C/WT chromatin dataset")
-```
-overlap plots -- mean(log2FC) vs mean(mCA)
-```{r}
-## load the workspace
-load(file = "../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
-mCA <- data.frame(readRDS("../dat/mCA/CAperGene_10wk_boxer.RDS"), stringsAsFactors = FALSE)
-mCA <- mCA[mCA$CA >= 5,]
-mCA <- mCA[mCA$gene.length >= 4500,]
-mCA$mCA.CA <- mCA$mCA/mCA$CA
-mCA1 <- mCA[,c(1,6,7)]
-
-## mCA analysis for KO/WT in whole cell dataset
-degs.dat <- read.table("../dat/DEGs/KO-WT_whole-cell_RNA-seq.txt", sep = "\t", 
-                       stringsAsFactors = FALSE, header = TRUE, row.names = 1)
-mat <- wholeCell.KO$res$results[,c(8:27,1,3)]
-colnames(mat)[21] <- "gene.name"
-grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
-if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
-    message("Cluster size is not equal, therefore run same size k-means 
-                variation!")
-    grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
-}
-res1 <- overlapDegsmCAWrapper(degs.dat = degs.dat, count.dat = mat,
-                                 refseq = mCA1, WT1.idx = grp.idx$WT.idx1, 
-                                 WT2.idx = grp.idx$WT.idx2, bin.size = 60, 
-                                 shift.size = 6, methyl.type = "mCA/CA")
-
-p1 <- (res1$plot1 + coord_cartesian(ylim = c(-0.25,0.25))) / res1$plot2 / res1$plot4
-rm(wholeCell.KO, degs.dat, mat)
-
-## mCA analysis for R306C/WT
-degs.dat <- read.table("../dat/DEGs/R306C-WT_whole-cell_RNA-seq.txt", 
-                       sep = "\t", stringsAsFactors = FALSE, header = TRUE, 
-                       row.names = 1)
-mat <- wholeCell.R306C$res$results[,c(8:27,1,3)]
-colnames(mat)[21] <- "gene.name"
-grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
-if(length(grp.idx$WT.idx1) != length(grp.idx$WT.idx2)){
-    message("Cluster size is not equal, therefore run same size k-means 
-                variation!")
-    grp.idx <- WTgrpKmeansEqualSize(control_mat = mat[,1:10])
-}
-res2 <- overlapDegsmCAWrapper(degs.dat, count.dat = mat, refseq = mCA1, 
-                                 WT1.idx = grp.idx$WT.idx1, 
-                                 WT2.idx = grp.idx$WT.idx2, bin.size = 40, 
-                                 shift.size = 4, methyl.type = "mCA/CA")
-p2 <- (res2$plot1 + coord_cartesian(ylim = c(-0.25,0.25))) / res2$plot2 / res2$plot4
-rm(wholeCell.R306C, degs.dat)
+mCA.chromatin.R306C <- finalRunmCA(chromatin.R306C$res$results, degs.file, 
+                                    mCA.sub, bin.size, shift.size, 
+                                    title = "R306C/WT chromatin dataset")
+chromatin.R306C$overlapPlots$combined
+mCA.chromatin.R306C$combined
+rm(count.file, degs.file)
 
 ```

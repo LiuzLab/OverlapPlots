@@ -20,7 +20,7 @@ globalVariables(c("x","y","log2FoldChange", "Significant",
                   "samples", "sampleName", "normCounts",
                   "genotype", "PC1", "PC2", "pval.log10", "logFC.crude",
                   "gene.length", "refseq", "gene.type", "variable",
-                  "value", "bin", "logFC"))
+                  "value", "bin", "logFC", "head", 'mCA.diff'))
 
 
 
