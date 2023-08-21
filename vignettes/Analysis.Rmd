@@ -51,7 +51,6 @@ print(getwd())
 Load annotation dataset reference sequence gene
 ```{r}
 load(file = "../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
-load(file = "../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
 mCA <- data.frame(readRDS("../dat/mCA/CAperGene_10wk_boxer.RDS"), stringsAsFactors = FALSE)
 mCA <- mCA[mCA$CA >= 5,]

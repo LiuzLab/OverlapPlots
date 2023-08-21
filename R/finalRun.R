@@ -12,7 +12,7 @@
 #'
 #' @return main analysis plots
 #' @noRd
-#'
+
 finalRun <- function(count.file, genotypes, degs.file, bin.size, shift.size,
                      title = "MeCP2 KO"){
   ## counts file

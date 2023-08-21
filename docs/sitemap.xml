@@ -25,6 +25,12 @@
     <loc>/reference/boxPlot.html</loc>
   </url>
   <url>
+    <loc>/reference/countsfile.html</loc>
+  </url>
+  <url>
+    <loc>/reference/degsfile.html</loc>
+  </url>
+  <url>
     <loc>/reference/DESeqCalculation.html</loc>
   </url>
   <url>
@@ -61,10 +67,19 @@
     <loc>/reference/makeLab.html</loc>
   </url>
   <url>
+    <loc>/reference/mCA.html</loc>
+  </url>
+  <url>
     <loc>/reference/MDSplot.html</loc>
   </url>
   <url>
     <loc>/reference/moving.average.function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/movingAverageAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/movingAverageAnalysismCA.html</loc>
   </url>
   <url>
     <loc>/reference/overlapDegsmCAWrapper.html</loc>
@@ -98,6 +113,9 @@
   </url>
   <url>
     <loc>/reference/Plot.Scatter.html</loc>
+  </url>
+  <url>
+    <loc>/reference/refseq.html</loc>
   </url>
   <url>
     <loc>/reference/scatter.lm.html</loc>
