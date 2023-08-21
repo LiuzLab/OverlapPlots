@@ -1,5 +1,8 @@
 #' Main analysis function
 #'
+#' @description
+#' This figure include the Overlap plots comparing log2FC vs the gene length.
+#' This plot is generated using Boxer et al KO/WT whole cell dataset.
 #' @param count.file whole cell RNAseq exon counts counts .txt format
 #' @param genotypes factor WT vs KO
 #' @param degs.file whole cell RNA seq DEGs .txt file
@@ -89,6 +92,12 @@ finalRun <- function(count.file, genotypes, degs.file, bin.size, shift.size,
 
 
 #' Main analysis function for mCA
+#'
+#' @description
+#' This figure illustrates the comparison between the Log2FC vs the mC (Fig A).
+#' It further looks into the distribution of the long and short genes in each
+#' bin (Fig B and Fig C) and then investigate if contribution of higher mC comes
+#' from long genes as compared to the short genes (Fig D).
 #'
 #' @param count.file whole cell RNAseq exon counts counts .txt format
 #' @param degs.file whole cell RNA seq DEGs .txt file
