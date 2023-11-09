@@ -2,7 +2,7 @@
 % Please edit documentation in R/movingAverageAnalysis.R
 \name{movingAverageAnalysismCA}
 \alias{movingAverageAnalysismCA}
-\title{Global Main analysis function for mCA}
+\title{Methylation Context Analysis with Differential Gene Expression}
 \usage{
 movingAverageAnalysismCA(
   count.file,
@@ -14,45 +14,53 @@ movingAverageAnalysismCA(
 )
 }
 \arguments{
-\item{count.file}{movingAverageAnalysis results}
+\item{count.file}{A dataframe resulting from the `movingAverageAnalysis` containing 
+normalized count data along with gene names and fold changes.}
 
-\item{degs.dat}{whole cell RNA seq DEGs .txt file}
+\item{degs.dat}{Path to the file with differential gene expression data from RNA-seq 
+analysis in .txt format.}
 
-\item{mCA}{mCA data}
+\item{mCA}{A dataframe with methylation context data, including gene names, mC values, 
+and gene lengths.}
 
-\item{bin.size}{bin size integer}
+\item{bin.size}{Integer specifying the bin size for averaging in the plots.}
 
-\item{shift.size}{shift size integer}
+\item{shift.size}{Integer specifying the step size for the moving average calculation 
+in the plots.}
 
-\item{title}{dataset title}
+\item{title}{A string indicating the title of the dataset for plot annotations. 
+Default is "MeCP2 KO".}
 }
 \value{
-main analysis plots for mCA
+A list containing the following components:
+\itemize{
+  \item{res}{An object with various analysis results and data subsets used in plotting.}
+  \item{combined}{A composite ggplot object that includes all the generated plots.}
+}
 }
 \description{
-This figure illustrates the comparison between the Log2FC vs the mC (Fig A).
-It further looks into the distribution of the long and short genes in each
-bin (Fig B and Fig C) and then investigate if contribution of higher mC comes
-from long genes as compared to the short genes (Fig D).
+Performs an integrated analysis of methylation context (mCA) data with RNA-seq 
+differential expression results. It generates comparative plots to examine log2 
+fold change versus methylation context (mC), distribution of gene lengths within 
+bins, and the contribution of methylation from long versus short genes.
 }
 \examples{
+\dontrun{
 library(OverlapPlots)
-data(countsfile)
-data(refseq)
-data(degsfile)
-data(mCA)
-dat <- countsfile
-degs.dat <- degsfile
+# Assuming 'countsfile', 'degsfile', and 'mCA' are loaded datasets
+dat <- countsfile # previously loaded or created dataset
+degs.dat <- degsfile # previously loaded or created DEGs dataset
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-bin.size <- 60
-shift.size <- 6
-wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,
-                        title = "KO/WT whole cell dataset")
-mCA <- mCA[mCA$CA >= 5,]
-mCA <- mCA[mCA$gene.length >= 4500,]
-mCA$mCA.CA <- mCA$mCA/mCA$CA
-mCA.sub <- mCA[,c(1,6,7)]
-mCA.wholeCell.KO <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.sub,
-                               bin.size, shift.size,
-                               title = "KO/WT whole cell dataset")
+mCA.sub <- mCA[mCA$CA >= 5 & mCA$gene.length >= 4500,]
+mCA.sub$mCA.CA <- mCA.sub$mCA/mCA.sub$CA
+
+# Perform moving average analysis
+wholeCell.KO <- movingAverageAnalysis(dat, genotypes, degs.dat, bin.size = 60, 
+                                      shift.size = 6, title = "KO/WT whole cell dataset")
+# Perform mCA analysis
+mCA.results <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.sub,
+                                        bin.size = 60, shift.size = 6, 
+                                        title = "KO/WT whole cell dataset")
+print(mCA.results$combined)
+}
 }

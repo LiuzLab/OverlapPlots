@@ -2,26 +2,36 @@
 % Please edit documentation in R/logofMeans.R
 \name{logofMeansBetweenAB}
 \alias{logofMeansBetweenAB}
-\title{Log of means between two samples}
+\title{Calculate Log2 Fold Change Between Two Sets of Samples}
 \usage{
 logofMeansBetweenAB(dat, A.samples, B.samples)
 }
 \arguments{
-\item{dat}{a dataframe. Differential analysis results from "DESeqCalculation"}
+\item{dat}{A dataframe or matrix where rows represent genes and columns represent samples. 
+The differential expression results from `DESeqCalculation` can be used as input.}
 
-\item{A.samples}{First sample type}
+\item{A.samples}{A vector of column indices or names for the first sample type (e.g., control group).}
 
-\item{B.samples}{Second sample type}
+\item{B.samples}{A vector of column indices or names for the second sample type (e.g., treatment group).}
 }
 \value{
-log2 fold change of means between two given samples
+A dataframe with additional columns for the mean expression of samples A and B, 
+crude fold change, and log2 fold change. Rows with `NA` values in the log2 fold change 
+are removed from the output.
 }
 \description{
-Computes the mean of each sample, fold change, and log fold change.
+The function calculates the average expression values for two sets of samples (A and B) and 
+then computes the fold change and log2 fold change between them. This is typically used 
+to analyze the differential expression of genes between two conditions in RNA-seq data.
 }
 \examples{
-dat <- matrix(rnorm(600, sd = 0.3), ncol = 6)
-dat <- as.data.frame(dat)
-logofMeansBetweenAB(dat = dat, A.samples = 1:3, B.samples = 4:6)
+# Simulate RNA-seq count data for 100 genes and 6 samples
+set.seed(123) # for reproducibility
+dat <- as.data.frame(matrix(rnbinom(n=600, mu=100, size=0.5), ncol=6))
+colnames(dat) <- c(paste("Sample_A", 1:3, sep=""), paste("Sample_B", 1:3, sep=""))
+rownames(dat) <- paste("Gene", 1:100, sep="")
 
+# Calculate log2 fold change between the sample groups
+logFC_results <- logofMeansBetweenAB(dat = dat, A.samples = 1:3, B.samples = 4:6)
+head(logFC_results)
 }

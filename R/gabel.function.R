@@ -1,22 +1,36 @@
-## gabel's method or moving average method
-#' Gabel Function
+#' Plot Moving Average for Comparison Between Groups
 #'
 #' @description
-#' Gabel's method or moving average method for KO vs WT.
+#' `gabelsPlot` applies Gabel's method or the moving average method to a given dataset
+#' for the purpose of comparing two groups, typically knockout (KO) versus wild type (WT).
+#' It calculates the moving average of a specified value, such as log2 fold change, across
+#' a range of gene lengths and generates a plot to visualize trends in the data.
 #'
-#' @param mat data
-#' @param length.type Gene
-#' @param comp.between comp between
-#' @param y.axis Mean Log2 Fold Change
+#' @param mat A dataframe containing the variables for analysis: typically log fold change 
+#' and gene length.
+#' @param length.type A string describing the type of length being analyzed, usually "Gene".
+#' This parameter is used to label the x-axis of the plot.
+#' @param comp.between A string that describes the comparison being made, which will be 
+#' used in the plot title to specify the groups being compared (e.g., "KO vs WT").
+#' @param y.axis A string to be used as the label for the y-axis of the plot, typically 
+#' "Mean Log2 Fold Change".
 #'
-#' @return Box plot
+#' @return A plot object created by the base `plot` function, representing the moving 
+#' average of the specified value across gene lengths.
 #' @export
+#'
 #' @examples
-#' # generate toy data
-#' b <- runif(1000, min=-2, max=2)
-#' c <- sample(2000:1000000, 1000, replace=TRUE)
-#' df <- data.frame(logFC.crude = b, gene.length = c)
-#' gabelsPlot(mat = df)
+#' # Generate toy data for log fold change and gene length
+#' set.seed(123) # For reproducibility
+#' logFC.crude <- runif(1000, min=-2, max=2)
+#' gene.length <- sample(2000:1000000, 1000, replace=TRUE)
+#' df <- data.frame(logFC.crude = logFC.crude, gene.length = gene.length)
+#'
+#' # Plot the moving average for the generated data
+#' gabelsPlot(mat = df, length.type = "Gene", 
+#'            comp.between = "KO vs WT", 
+#'            y.axis = "Mean Log2 Fold Change")
+
 gabelsPlot <- function(mat, length.type = "Gene", comp.between = "",
                         y.axis = "Mean Log2 Fold Change"){
   p1 <- movingAverageFunction(dat = mat, bin.size = 200, shift.size = 40,
@@ -24,17 +38,47 @@ gabelsPlot <- function(mat, length.type = "Gene", comp.between = "",
   plot(p1)
 }
 
-#' Moving Average Function
+#' Calculate and Plot Moving Average
 #'
-#' @param dat data
-#' @param bin.size bin size
-#' @param shift.size shift size
-#' @param length.type Gene
-#' @param comp.between comp between
-#' @param y.axis Mean Lof2 Fold Change
+#' @description
+#' Computes the moving average for a specified value across binned ranges of another variable, 
+#' typically gene length. This is often used to analyze trends in gene expression data, such as 
+#' log2 fold change across gene lengths. The function orders the data by gene length, bins it, 
+#' calculates the mean for each bin, and then generates a ggplot object visualizing the trend.
 #'
-#' @return ggplot object
+#' @param dat A dataframe or matrix where the first column contains the values for which the 
+#' moving average should be calculated (e.g., log2 fold change) and the second column contains 
+#' the variable used for binning (e.g., gene length).
+#' @param bin.size The number of data points in each bin over which the moving average should 
+#' be calculated.
+#' @param shift.size The number of data points by which the bin window should shift for each 
+#' iteration of the moving average calculation.
+#' @param length.type The description of the binning variable, used for labeling the x-axis 
+#' of the plot. Defaults to "Gene".
+#' @param comp.between A descriptive label for the comparison being made, used in the y-axis 
+#' label of the plot.
+#' @param y.axis A descriptive label for the value being averaged, used in the y-axis label 
+#' of the plot. Defaults to "Mean Log2 Fold Change".
+#'
+#' @return A ggplot object that displays the moving average plot.
 #' @noRd
+#'
+#' @examples
+#' # Assuming 'dat' is a dataframe with log2 fold change and gene length
+#' example_dat <- data.frame(
+#'   logFC = rnorm(1000, mean = 0, sd = 1),
+#'   geneLength = runif(1000, min = 2000, max = 1000000)
+#' )
+#' moving_average_plot <- movingAverageFunction(
+#'   dat = example_dat,
+#'   bin.size = 50,
+#'   shift.size = 10,
+#'   length.type = "Gene",
+#'   comp.between = "KO vs WT",
+#'   y.axis = "Mean Log2 Fold Change"
+#' )
+#' print(moving_average_plot)
+
 movingAverageFunction <- function(dat, bin.size, shift.size, length.type,
                                     comp.between, y.axis){
   dat <- dat[order(dat[,2]),]

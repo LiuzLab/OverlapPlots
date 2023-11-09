@@ -1,19 +1,31 @@
-## log of means between two/three samples
-#' Log of means between two samples
-#' @description
-#' Computes the mean of each sample, fold change, and log fold change.
-#' @param dat a dataframe. Differential analysis results from "DESeqCalculation"
-#' @param A.samples First sample type
-#' @param B.samples Second sample type
+#' Calculate Log2 Fold Change Between Two Sets of Samples
 #'
-#' @return log2 fold change of means between two given samples
+#' @description
+#' The function calculates the average expression values for two sets of samples (A and B) and 
+#' then computes the fold change and log2 fold change between them. This is typically used 
+#' to analyze the differential expression of genes between two conditions in RNA-seq data.
+#'
+#' @param dat A dataframe or matrix where rows represent genes and columns represent samples. 
+#' The differential expression results from `DESeqCalculation` can be used as input.
+#' @param A.samples A vector of column indices or names for the first sample type (e.g., control group).
+#' @param B.samples A vector of column indices or names for the second sample type (e.g., treatment group).
+#'
+#' @return A dataframe with additional columns for the mean expression of samples A and B, 
+#' crude fold change, and log2 fold change. Rows with `NA` values in the log2 fold change 
+#' are removed from the output.
 #' @export
 #'
 #' @examples
-#' dat <- matrix(rnorm(600, sd = 0.3), ncol = 6)
-#' dat <- as.data.frame(dat)
-#' logofMeansBetweenAB(dat = dat, A.samples = 1:3, B.samples = 4:6)
+#' # Simulate RNA-seq count data for 100 genes and 6 samples
+#' set.seed(123) # for reproducibility
+#' dat <- as.data.frame(matrix(rnbinom(n=600, mu=100, size=0.5), ncol=6))
+#' colnames(dat) <- c(paste("Sample_A", 1:3, sep=""), paste("Sample_B", 1:3, sep=""))
+#' rownames(dat) <- paste("Gene", 1:100, sep="")
 #'
+#' # Calculate log2 fold change between the sample groups
+#' logFC_results <- logofMeansBetweenAB(dat = dat, A.samples = 1:3, B.samples = 4:6)
+#' head(logFC_results)
+
 
 logofMeansBetweenAB <- function(dat, A.samples, B.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})
@@ -26,26 +38,41 @@ logofMeansBetweenAB <- function(dat, A.samples, B.samples){
   return(dat)
 }
 
-#' Log of Means between three samples
+#' Calculate Log2 Fold Change Among Three Sets of Samples
 #'
 #' @description
-#' Computes the mean of each sample, fold change, and log fold change.
+#' The function computes the average expression values for three sets of samples (A, B, and C) 
+#' and then calculates the fold change and log2 fold change using the differences between 
+#' these averages. This function is useful for RNA-seq data analysis where comparisons are 
+#' made across three different conditions or time points.
 #'
-#' @param dat a dataframe. Differential analysis results from "DESeqCalculation"
-#' @param A.samples First sample type
-#' @param B.samples Second sample type
-#' @param C.samples Third sample type
+#' @param dat A dataframe or matrix with rows representing genes and columns representing 
+#' samples. It typically contains count data from RNA-seq experiments.
+#' @param A.samples A vector of column indices or names for the first sample group.
+#' @param B.samples A vector of column indices or names for the second sample group.
+#' @param C.samples A vector of column indices or names for the third sample group.
 #'
-#' @return log2 fold change of means between three given samples
+#' @return A modified dataframe that includes additional columns for the mean expression 
+#' of each sample group, the crude fold change, and the log2 fold change based on the 
+#' differences between the sample means. Rows containing `NA` values after computation 
+#' are excluded from the output.
 #' @export
 #'
 #' @examples
-#' dat <- matrix(rnorm(600, sd = 0.3), ncol = 9)
+#' # Simulate RNA-seq count data for 100 genes across 9 samples
+#' set.seed(123) # for reproducibility
+#' dat <- matrix(rnbinom(n=900, mu=100, size=0.5), ncol=9)
+#' colnames(dat) <- c(paste("Sample_A", 1:3, sep=""), 
+#'                    paste("Sample_B", 1:3, sep=""), 
+#'                    paste("Sample_C", 1:3, sep=""))
+#' rownames(dat) <- paste("Gene", 1:100, sep="")
 #' dat <- as.data.frame(dat)
-#' logofMeansBetweenABC(dat = dat, A.samples = 1:3, B.samples = 4:6,
-#'  C.samples = 7:9)
 #'
-#'
+#' # Calculate log2 fold change among the three sample groups
+#' logFC_results <- logofMeansBetweenABC(dat = dat, A.samples = 1:3, 
+#'                                       B.samples = 4:6, C.samples = 7:9)
+#' head(logFC_results)
+
 logofMeansBetweenABC <- function(dat, A.samples, B.samples, C.samples){
   dat$Mean.A <- apply(dat[,A.samples], 1, function(r) {(mean(r))})
   dat$Mean.B <- apply(dat[,B.samples], 1, function(r) {(mean(r))})
@@ -58,14 +85,34 @@ logofMeansBetweenABC <- function(dat, A.samples, B.samples, C.samples){
   return(dat)
 }
 
-## log2FC between genotypes
-#' Log2FC between genotypes
+#' Calculate Log2 Fold Changes Within Genotypes
 #'
-#' @param dat data
+#' @description
+#' Computes log2 fold changes (log2FC) between pairs of genotypes within the provided data. 
+#' It first converts log2 values back to intensity values, calculates the mean intensities 
+#' for each genotype, and then derives the log2FC between these means. This function is 
+#' particularly useful for analyzing differential expression within genotypic comparisons.
 #'
-#' @return log2 fold change between genotypes
+#' @param dat A dataframe where rows are genes and columns are samples, which must include 
+#' 'gene.name' and 'gene.length' columns along with log2-transformed expression values for each genotype.
+#'
+#' @return A dataframe containing log2 fold change values for each pair of genotypes 
+#' along with gene length information.
+#'
 #' @noRd
-## log2FC between genotypes
+#'
+#' @examples
+#' # Simulated example with gene names and gene lengths
+#' dat <- data.frame(gene.name = paste("Gene", 1:100, sep=""),
+#'                   gene.length = sample(1000:2000, 100, replace = TRUE),
+#'                   replicate(matrix(rnorm(200, mean = 5, sd = 0.3), ncol = 2), 2))
+#' colnames(dat)[3:6] <- c("Genotype1_Rep1", "Genotype1_Rep2", 
+#'                         "Genotype2_Rep1", "Genotype2_Rep2")
+#'
+#' # Calculate log2 fold change within genotypes
+#' log2FC_results <- log2FCwithingenotypes(dat)
+#' head(log2FC_results)
+
 log2FCwithingenotypes <- function(dat){
 
   ## converting log2 values to intensity and then calculating log2FC

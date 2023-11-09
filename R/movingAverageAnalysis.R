@@ -1,31 +1,42 @@
-#' Global Main analysis function
+#' Comprehensive Analysis of RNA-seq Data with Moving Average Visualization
 #'
 #' @description
-#' This function is intended to generate a figure where it includes the Overlap
-#' plots comparing log2FC vs the gene length. This plot is generated using Boxer
-#'  et al KO/WT whole cell dataset.
-#' @param dat whole cell RNAseq exon counts counts .txt format
-#' @param genotypes factor WT vs KO
-#' @param degs.dat whole cell RNA seq DEGs .txt file
-#' @param bin.size bin size integer
-#' @param shift.size shift size integer
-#' @param title dataset title
+#' Integrates several steps of RNA-seq data analysis for knockout (KO) versus wild type (WT) comparisons
+#' using the DESeq2 package. The function processes exon count data, executes differential expression 
+#' analysis, performs k-means clustering, and generates overlap plots showing log2 fold changes 
+#' versus gene length. Additionally, scatter plots for gene distribution and other relevant plots 
+#' are produced.
 #'
-#' @return main analysis plots
+#' @param dat Path to the whole cell RNAseq exon counts file in .txt format.
+#' @param genotypes A factor indicating the classification of samples, typically "WT" versus "KO".
+#' @param degs.dat Path to the whole cell RNAseq differentially expressed genes (DEGs) file in .txt format.
+#' @param bin.size Integer specifying the bin size for averaging in the overlap plots.
+#' @param shift.size Integer specifying the step size for the moving average calculation in the overlap plots.
+#' @param title A character string to be used as the title for the plots, indicating the dataset.
+#'
+#' @return A list containing the following elements:
+#' \itemize{
+#'   \item{res}{Object containing the results from DESeq2 analysis.}
+#'   \item{overlapPlots}{List of ggplot objects for overlap plots, including combined and individual plots for all genes, edgeR DEGs, and DESeq2 DEGs.}
+#'   \item{scatterPlot1}{Scatter plot for distribution of genes with log2 fold change greater than 0.}
+#'   \item{scatterPlot2}{Scatter plot for distribution of genes with log2 fold change greater than log2(1.2).}
+#' }
 #' @export
 #' @examples
+#' \dontrun{
 #' library(OverlapPlots)
 #' data(countsfile)
 #' data(refseq)
 #' data(degsfile)
-#' dat <- countsfile
-#' degs.dat <- degsfile
 #' genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-#' bin.size <- 60
-#' shift.size <- 6
-#' wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,
-#'                         title = "KO/WT whole cell dataset")
-
+#' 
+#' # Assuming 'countsfile', 'refseq', and 'degsfile' are loaded datasets
+#' analysis_results <- movingAverageAnalysis(dat = countsfile, genotypes = genotypes, 
+#'                                          degs.dat = degsfile, bin.size = 60, 
+#'                                          shift.size = 6, 
+#'                                          title = "KO/WT whole cell dataset")
+#' print(analysis_results$overlapPlots$combined)
+#' }
 movingAverageAnalysis <- function(dat, genotypes,  degs.dat, bin.size, shift.size,
                      title = "MeCP2 KO"){
   ## running DESeq and all the plots are in dds object
@@ -97,43 +108,52 @@ movingAverageAnalysis <- function(dat, genotypes,  degs.dat, bin.size, shift.siz
               scatterPlot2 = scater2))
 }
 
-#' Global Main analysis function for mCA
+#' Methylation Context Analysis with Differential Gene Expression
 #'
 #' @description
-#' This figure illustrates the comparison between the Log2FC vs the mC (Fig A).
-#' It further looks into the distribution of the long and short genes in each
-#' bin (Fig B and Fig C) and then investigate if contribution of higher mC comes
-#' from long genes as compared to the short genes (Fig D).
+#' Performs an integrated analysis of methylation context (mCA) data with RNA-seq 
+#' differential expression results. It generates comparative plots to examine log2 
+#' fold change versus methylation context (mC), distribution of gene lengths within 
+#' bins, and the contribution of methylation from long versus short genes.
 #'
-#' @param count.file movingAverageAnalysis results
-#' @param degs.dat whole cell RNA seq DEGs .txt file
-#' @param mCA mCA data
-#' @param bin.size bin size integer
-#' @param shift.size shift size integer
-#' @param title dataset title
+#' @param count.file A dataframe resulting from the `movingAverageAnalysis` containing 
+#' normalized count data along with gene names and fold changes.
+#' @param degs.dat Path to the file with differential gene expression data from RNA-seq 
+#' analysis in .txt format.
+#' @param mCA A dataframe with methylation context data, including gene names, mC values, 
+#' and gene lengths.
+#' @param bin.size Integer specifying the bin size for averaging in the plots.
+#' @param shift.size Integer specifying the step size for the moving average calculation 
+#' in the plots.
+#' @param title A string indicating the title of the dataset for plot annotations. 
+#' Default is "MeCP2 KO".
 #'
-#' @return main analysis plots for mCA
+#' @return A list containing the following components:
+#' \itemize{
+#'   \item{res}{An object with various analysis results and data subsets used in plotting.}
+#'   \item{combined}{A composite ggplot object that includes all the generated plots.}
+#' }
 #' @export
 #' @examples
+#' \dontrun{
 #' library(OverlapPlots)
-#' data(countsfile)
-#' data(refseq)
-#' data(degsfile)
-#' data(mCA)
-#' dat <- countsfile
-#' degs.dat <- degsfile
+#' # Assuming 'countsfile', 'degsfile', and 'mCA' are loaded datasets
+#' dat <- countsfile # previously loaded or created dataset
+#' degs.dat <- degsfile # previously loaded or created DEGs dataset
 #' genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-#' bin.size <- 60
-#' shift.size <- 6
-#' wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,
-#'                         title = "KO/WT whole cell dataset")
-#' mCA <- mCA[mCA$CA >= 5,]
-#' mCA <- mCA[mCA$gene.length >= 4500,]
-#' mCA$mCA.CA <- mCA$mCA/mCA$CA
-#' mCA.sub <- mCA[,c(1,6,7)]
-#' mCA.wholeCell.KO <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.sub,
-#'                                bin.size, shift.size,
-#'                                title = "KO/WT whole cell dataset")
+#' mCA.sub <- mCA[mCA$CA >= 5 & mCA$gene.length >= 4500,]
+#' mCA.sub$mCA.CA <- mCA.sub$mCA/mCA.sub$CA
+#'
+#' # Perform moving average analysis
+#' wholeCell.KO <- movingAverageAnalysis(dat, genotypes, degs.dat, bin.size = 60, 
+#'                                       shift.size = 6, title = "KO/WT whole cell dataset")
+#' # Perform mCA analysis
+#' mCA.results <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.sub,
+#'                                         bin.size = 60, shift.size = 6, 
+#'                                         title = "KO/WT whole cell dataset")
+#' print(mCA.results$combined)
+#' }
+
 
 movingAverageAnalysismCA <- function(count.file, degs.dat, mCA, bin.size, shift.size,
                         title = "MeCP2 KO"){

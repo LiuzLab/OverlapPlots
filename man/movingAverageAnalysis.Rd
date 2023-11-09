@@ -2,7 +2,7 @@
 % Please edit documentation in R/movingAverageAnalysis.R
 \name{movingAverageAnalysis}
 \alias{movingAverageAnalysis}
-\title{Global Main analysis function}
+\title{Comprehensive Analysis of RNA-seq Data with Moving Average Visualization}
 \usage{
 movingAverageAnalysis(
   dat,
@@ -14,36 +14,47 @@ movingAverageAnalysis(
 )
 }
 \arguments{
-\item{dat}{whole cell RNAseq exon counts counts .txt format}
+\item{dat}{Path to the whole cell RNAseq exon counts file in .txt format.}
 
-\item{genotypes}{factor WT vs KO}
+\item{genotypes}{A factor indicating the classification of samples, typically "WT" versus "KO".}
 
-\item{degs.dat}{whole cell RNA seq DEGs .txt file}
+\item{degs.dat}{Path to the whole cell RNAseq differentially expressed genes (DEGs) file in .txt format.}
 
-\item{bin.size}{bin size integer}
+\item{bin.size}{Integer specifying the bin size for averaging in the overlap plots.}
 
-\item{shift.size}{shift size integer}
+\item{shift.size}{Integer specifying the step size for the moving average calculation in the overlap plots.}
 
-\item{title}{dataset title}
+\item{title}{A character string to be used as the title for the plots, indicating the dataset.}
 }
 \value{
-main analysis plots
+A list containing the following elements:
+\itemize{
+  \item{res}{Object containing the results from DESeq2 analysis.}
+  \item{overlapPlots}{List of ggplot objects for overlap plots, including combined and individual plots for all genes, edgeR DEGs, and DESeq2 DEGs.}
+  \item{scatterPlot1}{Scatter plot for distribution of genes with log2 fold change greater than 0.}
+  \item{scatterPlot2}{Scatter plot for distribution of genes with log2 fold change greater than log2(1.2).}
+}
 }
 \description{
-This function is intended to generate a figure where it includes the Overlap
-plots comparing log2FC vs the gene length. This plot is generated using Boxer
- et al KO/WT whole cell dataset.
+Integrates several steps of RNA-seq data analysis for knockout (KO) versus wild type (WT) comparisons
+using the DESeq2 package. The function processes exon count data, executes differential expression 
+analysis, performs k-means clustering, and generates overlap plots showing log2 fold changes 
+versus gene length. Additionally, scatter plots for gene distribution and other relevant plots 
+are produced.
 }
 \examples{
+\dontrun{
 library(OverlapPlots)
 data(countsfile)
 data(refseq)
 data(degsfile)
-dat <- countsfile
-degs.dat <- degsfile
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-bin.size <- 60
-shift.size <- 6
-wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,
-                        title = "KO/WT whole cell dataset")
+
+# Assuming 'countsfile', 'refseq', and 'degsfile' are loaded datasets
+analysis_results <- movingAverageAnalysis(dat = countsfile, genotypes = genotypes, 
+                                         degs.dat = degsfile, bin.size = 60, 
+                                         shift.size = 6, 
+                                         title = "KO/WT whole cell dataset")
+print(analysis_results$overlapPlots$combined)
+}
 }

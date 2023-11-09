@@ -17,11 +17,12 @@
 #' # Assuming 'data' is a matrix of normalized values and 'samples' is a factor vector indicating groups
 #' boxPlot(data = matrix(rnorm(100), ncol=10), samples = factor(rep(1:2, each=5)))
 #'
-boxPlot <- function(data, samples) {
-  par(mar=c(2+round(max(nchar(colnames(data)))/2), 4, 2, 1), font=2)
-  bp <- boxplot(data, boxwex=0.6, notch=TRUE, outline=FALSE, las=2, col=samples)
-  legend("topleft", levels(samples), fill=palette(), bty="n", cex=0.8, xpd=TRUE)
-  invisible(bp)
+
+boxPlot <- function(data, samples){
+  par(mar=c(2+round(max(nchar(colnames(data)))/2),4,2,1),font=2)
+  boxplot(data, boxwex=0.6, notch=TRUE, outline=FALSE, las=2, col=samples)
+  legend("topleft", levels(samples), fill = palette(), bty="n", cex = 0.8,
+         xpd = TRUE)
 }
 
 #' Gene Expression Level Visualization in Microarray Data
@@ -41,32 +42,28 @@ boxPlot <- function(data, samples) {
 #' # Assuming 'data' is a data frame of expression levels with row names as gene IDs and 'genotypes' is a factor vector of genotypes
 #' GeneExpLevels(data = your_data, gene.id = c("GeneX", "Gene X"), genotypes = your_genotypes)
 #'
-GeneExpLevels <- function(data, gene.id, genotypes) {
+GeneExpLevels <- function(data, gene.id, genotypes){
+
   ## MeCP2 expression level
   ind <- which(rownames(data) == gene.id[1])
-  if (length(ind) == 0) stop("Gene ID not found in the row names of the data.")
-  
   matGene <- as.vector(as.matrix(data[ind,]))
   plotDat <- data.frame(sampleName = colnames(data),
                         normCounts = matGene,
-                        genotype = genotypes)
-  
-  ggplotObject <- ggplot(plotDat, aes(x = sampleName, y = normCounts, fill = genotype)) +
-                  geom_bar(stat="identity") +
-                  ylab("Log2 Normalized Counts") +
-                  ggtitle(paste("Barplot for Gene ", gene.id[2], sep="")) +
-                  theme_bw() +
-                  facet_grid(. ~ genotype, space = "free", scales = "free") +
-                  theme(plot.title = element_text(size = 24, face = "bold"),
-                        axis.title.y = element_text(size = 20, color = "black", face = "bold"),
-                        axis.text.y = element_text(size = 20, color = "black", face = "bold"),
-                        axis.text.x = element_blank(),
-                        legend.position = "none",
-                        axis.ticks.x = element_blank(),
-                        axis.title.x = element_blank(),
-                        strip.text = element_text(size = 18, color = "red", face = "bold"))
-  
-  return(ggplotObject)
+                        genotype = genotypes,
+                        Genotype_Condition = samples)
+  print(ggplot(plotDat, aes(x = sampleName, y = normCounts, fill = genotype)) +
+          geom_bar(stat="identity") + ylab("Log2 Normalized Data") +
+          ggtitle(paste("Barplot for Gene ",gene.id[2],sep="")) + theme_bw() +
+          facet_grid(. ~ Genotype_Condition,  space = "free", scales="free") +
+          theme(plot.title = element_text(size = 24, face = "bold"),
+                axis.title.y= element_text(size = 20, colour = "black",
+                                           face = "bold"),
+                axis.text.y = element_text(size = 20, colour = "black",
+                                           face = "bold"),
+                axis.text.x = element_blank(), legend.position="none",
+                axis.ticks.x = element_blank(), axis.title.x =  element_blank()
+                , strip.text = element_text(size = 18, colour = "red",
+                                          face = "bold")))
 }
 
 
@@ -89,37 +86,41 @@ GeneExpLevels <- function(data, gene.id, genotypes) {
 #' MDSplot(data = your_data, genotypes = your_genotypes, conditions = your_conditions)
 #'
 MDSplot <- function(data, genotypes, conditions){
-  # Perform MDS
-  mdsDist <- cmdscale(d = dist(t(data)), eig = TRUE, k = 2)
-  mdsDist <- data.frame(genotypes, x = mdsDist$points[,1]/1e4,
+  mdsDist = cmdscale(d = dist(t(data)), eig = TRUE, k = 2)
+  mdsDist = data.frame(genotypes, x = mdsDist$points[,1]/1e4,
                        y = mdsDist$points[,2]/1e4)
 
-  # Create the base plot object
-  base_plot <- ggplot(mdsDist, aes(x = x, y = y, color = genotypes))
-
-  # Add points to the plot; use different shapes if 'conditions' is provided
+  ## plot
   if(missing(conditions)){
-    plot <- base_plot +
-            geom_point(size = 1) +
-            ylab("MDS Coordinate 2 (x 1e4)") +
-            xlab("MDS Coordinate 1 (x 1e4)")
+    print(ggplot(mdsDist, aes(x = x, y = y, color = genotypes)) +
+          geom_point(size = 1) + ## shape = genotypes,
+          ylab("MDS Coordinate 2 (x 1e4)") + xlab("MDS Coordinate 1 (x 1e4)") +
+          theme_bw() + theme(legend.text = element_text(size = 18,
+                      face = "bold"),
+                      legend.title = element_text(size = 18, colour = "black",
+                      face = "bold"),
+                      axis.title = element_text(size = 18, face = "bold"),
+                      axis.text.x = element_text(size = 18, face = "bold",
+                                                          color = "black"),
+                      axis.text.y = element_text(size = 18, face = "bold",
+                                                          color = "black"),
+                      plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
   }
   else{
-    plot <- base_plot +
-            aes(shape = conditions) +
-            geom_point(size = 8) +
-            ylab("MDS Coordinate 2 (x 1e4)") +
-            xlab("MDS Coordinate 1 (x 1e4)")
+    print(ggplot(mdsDist, aes(x = x, y = y, shape = conditions,
+                              color = genotypes)) + geom_point(size = 8) +
+          ylab("MDS Coordinate 2 (x 1e4)") + xlab("MDS Coordinate 1 (x 1e4)") +
+          theme_bw() + theme(legend.text = element_text(size = 18,
+                                                          face = "bold"),
+                      legend.title = element_text(size = 18, colour = "black",
+                                                           face = "bold"),
+                      axis.title = element_text(size = 18, face = "bold"),
+                      axis.text.x = element_text(size = 18, face = "bold",
+                                                          color = "black"),
+                      axis.text.y = element_text(size = 18, face = "bold",
+                                                          color = "black"),
+                      plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
   }
-
-  # Customize the theme of the plot
-  plot + theme_bw() +
-         theme(legend.text = element_text(size = 18, face = "bold"),
-               legend.title = element_text(size = 18, color = "black", face = "bold"),
-               axis.title = element_text(size = 18, face = "bold"),
-               axis.text.x = element_text(size = 18, face = "bold", color = "black"),
-               axis.text.y = element_text(size = 18, face = "bold", color = "black"),
-               plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 }
 
 
@@ -141,38 +142,41 @@ MDSplot <- function(data, genotypes, conditions){
 #' # Assuming 'data' is a numeric matrix with columns as samples
 #' PCAplot(data = matrix(rnorm(100), ncol = 10), genotypes = factor(rep(1:2, each = 5)), conditions = factor(rep(1:2, each = 5)))
 #'
-PCAplot <- function(data, genotypes, conditions) {
-  # Calculate the principal components
-  pcs <- prcomp(t(data), center = TRUE)
-  # Calculate the percentage of variance explained by the PCs
-  percentVar <- round(((pcs$sdev) ^ 2 / sum((pcs$sdev) ^ 2) * 100), 2)
-  # Convert the PCA results into a data frame for plotting
-  pcaData <- as.data.frame(pcs$x)
-  
-  # Define a helper function for making axis labels
-  makeLab <- function(pv, pc) {
-    paste0("PC", pc, " (", pv, "%)")
+PCAplot <- function(data, genotypes, conditions){
+  ## Calculating PC components
+  pcs = prcomp(t(data), center = TRUE)
+  percentVar = round(((pcs$sdev) ^ 2 / sum((pcs$sdev) ^ 2)* 100), 2)
+  if(missing(conditions)){
+    print(ggplot(as.data.frame(pcs$x), aes(PC1,PC2, color = genotypes)) +
+            xlab(makeLab(percentVar[1],1)) + ylab(makeLab(percentVar[2],2)) +
+            geom_point(size = 8) + theme_bw() +
+            theme(legend.text = element_text(size = 16, face = "bold"),
+                  legend.title = element_text(size = 16, colour = "black",
+                                              face = "bold"),
+                  plot.title = element_blank(),
+                  axis.title = element_text(size = 18, face = "bold"),
+                  axis.text.x = element_text(size = 16, face = "bold",
+                                             color = "black"),
+                  axis.text.y = element_text(size = 16, face = "bold",
+                                             color = "black"),
+                  plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
   }
-  
-  # Create the PCA plot
-  if(missing(conditions)) {
-    ggplot(pcaData, aes(PC1, PC2, color = genotypes)) +
-      geom_point(size = 8) +
-      xlab(makeLab(percentVar[1], 1)) + 
-      ylab(makeLab(percentVar[2], 2))
-  } else {
-    ggplot(pcaData, aes(PC1, PC2, color = genotypes, shape = conditions)) +
-      geom_point(size = 8) +
-      xlab(makeLab(percentVar[1], 1)) + 
-      ylab(makeLab(percentVar[2], 2))
-  } + 
-    theme_bw() +
-    theme(legend.text = element_text(size = 16, face = "bold"),
-          legend.title = element_text(size = 16, color = "black", face = "bold"),
-          axis.title = element_text(size = 18, face = "bold"),
-          axis.text.x = element_text(size = 16, face = "bold", color = "black"),
-          axis.text.y = element_text(size = 16, face = "bold", color = "black"),
-          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))
+  else{
+    print(ggplot(as.data.frame(pcs$x), aes(PC1,PC2, color = genotypes,
+                                           shape = conditions)) +
+            xlab(makeLab(percentVar[1],1)) + ylab(makeLab(percentVar[2],2)) +
+            geom_point(size = 8) + theme_bw() +
+            theme(legend.text = element_text(size = 16, face = "bold"),
+                  legend.title = element_text(size = 16, colour = "black",
+                                              face = "bold"),
+                  plot.title = element_blank(),
+                  axis.title = element_text(size = 18, face = "bold"),
+                  axis.text.x = element_text(size = 16, face = "bold",
+                                             color = "black"),
+                  axis.text.y = element_text(size = 16, face = "bold",
+                                             color = "black"),
+                  plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
+  }
 }
 
 
@@ -191,12 +195,8 @@ PCAplot <- function(data, genotypes, conditions) {
 #' makeLab(25.3, 1)
 #' # [1] "PC1: 25.3% variance"
 #'
-makeLab <- function(x, pc) {
-  # Validate inputs
-  stopifnot(is.numeric(x), x > 0, x <= 100, is.numeric(pc), pc > 0)
-  
-  # Create the label
-  paste0("PC", pc, ": ", x, "% variance")
+makeLab = function(x,pc) {
+  paste0("PC",pc,": ",x,"% variance")
 }
 
 #' Scatter Plot Visualization for Differentially Expressed Genes (DEGs)
@@ -218,34 +218,39 @@ makeLab <- function(x, pc) {
 #' plotScatter(dat = your_data, log2FC = 1, comp.between = "Condition1 vs Condition2")
 #'
 plotScatter <- function(dat, log2FC, comp.between, pval = 0.05){
-  # Setting up the data by renaming columns and categorizing genes
   colnames(dat) <- c("gene.name", "logFC", "adj.P.Val", "gene.length")
-  gene.type <- ifelse(dat$adj.P.Val < pval & abs(dat$logFC) > log2FC,
-                      ifelse(dat$gene.length > 100e3, "Long Genes", "Short Genes"),
-                      "Not Stat. Signif.")
+  gene.type <- ifelse((dat$adj.P.Val < pval & abs(dat$logFC) > log2FC),
+                      ifelse(dat$gene.length > 100e3, "Long Genes",
+                             "Short Genes"),"Not Stat. Signif.")
   ind <- which(gene.type != "Not Stat. Signif.")
   dat <- dat[ind,]
   gene.type <- gene.type[ind]
 
-  # Generating a contingency table for the annotations
+  ## Contingency Table
   up.LongGenes <- sum(dat$logFC > log2FC & dat$gene.length > 100e3)
   down.LongGenes <- sum(dat$logFC < -log2FC & dat$gene.length > 100e3)
   up.ShortGenes <- sum(dat$logFC > log2FC & dat$gene.length <= 100e3)
   down.ShortGenes <- sum(dat$logFC < -log2FC & dat$gene.length <= 100e3)
-  cont.tab <- matrix(data = c(up.LongGenes, down.LongGenes, up.ShortGenes, down.ShortGenes),
-                     nrow = 2, byrow = TRUE, dimnames = list(c("Up", "Down"), c("Long Genes", "Short Genes")))
-  
-  # Creating the scatter plot
-  ggplot(data = dat, aes(y = logFC, x = gene.length/1000, colour = gene.type)) +
-    geom_point(size = 1) +
-    xlab("Gene Length (KB)") +
-    ylab(paste("Log2 Fold Change", comp.between)) +
-    scale_x_continuous(trans = 'log10', breaks = c(0,1,10,100,1000)) +
-    coord_cartesian(ylim = c(-1.5, 1.5)) +
-    theme_bw() +
-    annotate("text", x = 500, y = 1.5, label = cont.tab[1, 1], size = 5, fontface = "bold") +
-    annotate("text", x = 500, y = -1.5, label = cont.tab[2, 1], size = 5, fontface = "bold") +
-    annotate("text", x = 1, y = 1.5, label = cont.tab[1, 2], size = 5, fontface="bold") +
+  cont.tab <- matrix(data = c(up.LongGenes, down.LongGenes, up.ShortGenes,
+                              down.ShortGenes), nrow = 2, ncol = 2)
+  rownames(cont.tab) <- c("Up", "Down")
+  colnames(cont.tab) <- c("Long.Gene", "Short.Gene")
+  print(cont.tab)
+
+  ## qplot
+  print(ggplot(data = dat, aes(y = logFC, x = gene.length/1000,
+      colour = gene.type)) + geom_point(size = 1) + xlab("Gene Length in KB") +
+                ylab(paste("Log2 Fold Change", comp.between)) +
+      scale_x_continuous(trans = log10_trans(), breaks = c(0,1,10,100,1000)) +
+      coord_cartesian(ylim = c(-1.5,1.5)) + theme_bw() +
+      annotate("text", x = 500, y=1.5, label= cont.tab[1,1], size=7,
+               fontface="bold") +
+      annotate("text", x = 500, y=-1.5, label= cont.tab[2,1], size=7,
+               fontface="bold") +
+      annotate("text", x = 1, y=1.5, label = cont.tab[1,2], size=7,
+               fontface="bold") +
+      annotate("text", x = 1, y=-1.5, label = cont.tab[2,2], size=7,
+               fontface="bold") +
       theme(plot.title = element_text(size = 14, face = "bold"),
             axis.title = element_text(size = 18, face = "bold"),
             legend.position="none",
@@ -254,7 +259,7 @@ plotScatter <- function(dat, log2FC, comp.between, pval = 0.05){
             axis.text.y = element_text(size = 18, face = "bold",
                                        color = "black"),
             legend.text = element_text(size = 18, face = "bold"),
-            plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+            plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
 }
 
 
@@ -275,37 +280,25 @@ plotScatter <- function(dat, log2FC, comp.between, pval = 0.05){
 #' scatterlm(dat = your_data)
 #'
 scatterlm <- function(dat){
-  # Validate that necessary columns exist
-  requiredCols <- c("gene.length", "logFC.crude")
-  if(!all(requiredCols %in% names(dat))) {
-    stop("Data frame must contain columns 'gene.length' and 'logFC.crude'")
-  }
-  
-  # Fit linear model
-  lm_fit <- lm(gene.length ~ logFC.crude, dat)
-  
-  # Calculate R-squared value and create label
-  r.sq <- paste("R^2 = ", format(summary(lm_fit)$r.squared, digits = 2))
-  
-  # Print summary to console
-  print(summary(lm_fit))
-  
-  # Create scatter plot with regression line
-  scatter_plot <- ggplot(dat, aes(x = gene.length/1000, y = logFC.crude)) +
-    geom_point() +
-    geom_smooth(method = "lm", color = "blue") +
-    xlab("Gene Length (KB)") +
-    ylab("Mean Log2 Fold Change") +
-    theme_bw() +
-    scale_x_continuous(trans = 'log10', breaks = c(0, 1, 10, 100, 1000)) +
-    annotate("text", x = 500, y = 1.5, label = r.sq, size = 5, fontface = "bold") +
-    theme(plot.title = element_text(size = 18, face = "bold"),
-          axis.title.y = element_text(size = 18, colour = "black", face = "bold"),
-          axis.title.x = element_text(size = 18, colour = "black", face = "bold"),
-          axis.text.y = element_text(size = 18, colour = "black", face = "bold"),
-          axis.text.x = element_text(size = 18, colour = "black", face = "bold"),
-          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))
-  
-  # Return the plot
-  return(scatter_plot)
+  r.sq <- paste("R^2 = ",format(summary(lm(gene.length ~ logFC.crude,
+                                           dat))$r.squared, digits = 2))
+  print(summary(lm(gene.length ~ logFC.crude, dat)))
+  cat(summary(lm(gene.length ~ logFC.crude, dat))$r.squared,"\n")
+  print(qplot(y = logFC.crude, x = gene.length/1000, data = dat) +
+          geom_smooth(method = "lm") + xlab("Gene Length") +
+          ylab("Mean Log2 Fold Change") + theme_bw() +
+          scale_x_continuous(trans = log10_trans(),
+                             breaks = c(0,1,10,100,1000)) +
+          annotate("text", x = 500, y=1.5, label = r.sq, size = 5,
+                   fontface="bold") +
+          theme(plot.title = element_text(size = 18, face = "bold"),
+                axis.title.y = element_text(size = 18, colour = "black",
+                                            face = "bold"),
+                axis.title.x = element_text(size = 18, colour = "black",
+                                            face = "bold"),
+                axis.text.y = element_text(size = 18, colour = "black",
+                                           face = "bold"),
+                axis.text.x = element_text(size = 18, colour = "black",
+                                           face = "bold"),
+                plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")))
 }

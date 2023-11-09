@@ -1,18 +1,44 @@
-#' Main analysis function
+#' Comprehensive Analysis Pipeline for Differential Expression Data
 #'
 #' @description
-#' This figure include the Overlap plots comparing log2FC vs the gene length.
-#' This plot is generated using Boxer et al KO/WT whole cell dataset.
-#' @param count.file whole cell RNAseq exon counts counts .txt format
-#' @param genotypes factor WT vs KO
-#' @param degs.file whole cell RNA seq DEGs .txt file
-#' @param bin.size bin size integer
-#' @param shift.size shift size integer
-#' @param title dataset title
+#' Conducts a complete analysis for RNA-seq data by integrating differential expression 
+#' analysis (DESeq2), k-means clustering for grouping genes, and generating overlay plots 
+#' to compare log2 fold changes versus gene length. The function processes count data, 
+#' applies the DESeq2 workflow, performs clustering, reads in DEGs data, and creates a 
+#' series of plots to visualize the findings.
 #'
-#' @return main analysis plots
+#' @param count.file Path to a file containing whole cell RNAseq exon counts in .txt format.
+#' @param genotypes Factor indicating the classification of samples, typically "WT" versus "KO".
+#' @param degs.file Path to a file containing whole cell RNAseq differentially expressed genes (DEGs) 
+#' in .txt format.
+#' @param bin.size Integer specifying the number of genes in each bin for calculating running averages.
+#' @param shift.size Integer specifying the step size for the moving window when calculating running averages.
+#' @param title A title for the dataset, used in plot annotations. Default is "MeCP2 KO".
+#'
+#' @return A list containing the following components:
+#' \itemize{
+#'   \item{res}{The DESeq2 analysis results object.}
+#'   \item{overlapPlots}{A list of ggplot objects for overlay plots, including combined and individual plots 
+#'                        for all genes, edgeR DEGs, and DESeq2 DEGs.}
+#'   \item{scatterPlot1}{A ggplot object for the scatter plot with log2FC thresholded at 0.}
+#'   \item{scatterPlot2}{A ggplot object for the scatter plot with log2FC thresholded at log2(1.2).}
+#' }
 #' @noRd
-
+#'
+#' @examples
+#' \dontrun{
+#' count.file <- "path/to/your/count_data.txt"
+#' genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
+#' degs.file <- "path/to/your/degs_data.txt"
+#' bin.size <- 60
+#' shift.size <- 6
+#' title <- "Sample Analysis Title"
+#'
+#' analysis_results <- finalRun(count.file = count.file, genotypes = genotypes, 
+#'                              degs.file = degs.file, bin.size = bin.size, 
+#'                              shift.size = shift.size, title = title)
+#' print(analysis_results$overlapPlots$combined)
+#' }
 finalRun <- function(count.file, genotypes, degs.file, bin.size, shift.size,
                      title = "MeCP2 KO"){
   ## counts file
@@ -91,24 +117,46 @@ finalRun <- function(count.file, genotypes, degs.file, bin.size, shift.size,
 }
 
 
-#' Main analysis function for mCA
+#' Main Analysis Function for Methylation Context (mC) Data
 #'
 #' @description
-#' This figure illustrates the comparison between the Log2FC vs the mC (Fig A).
-#' It further looks into the distribution of the long and short genes in each
-#' bin (Fig B and Fig C) and then investigate if contribution of higher mC comes
-#' from long genes as compared to the short genes (Fig D).
+#' Performs a comprehensive analysis integrating methylation context with differential
+#' gene expression data. The function generates multiple plots:
+#' (A) Log2 fold change (Log2FC) versus methylation context (mC),
+#' (B) Distribution of long and short genes within each bin,
+#' (C) Comparative analysis of gene length distribution in bins,
+#' (D) Examination of higher mC contribution from long genes versus short genes.
 #'
-#' @param count.file whole cell RNAseq exon counts counts .txt format
-#' @param degs.file whole cell RNA seq DEGs .txt file
-#' @param mCA mCA data
-#' @param bin.size bin size integer
-#' @param shift.size shift size integer
-#' @param title dataset title
+#' @param count.file Path to a file containing whole cell RNAseq exon counts in 
+#' .txt format. Expected to contain gene expression counts for different samples.
+#' @param degs.file Path to a file containing differentially expressed genes (DEGs) 
+#' from whole cell RNAseq analysis in .txt format.
+#' @param mCA Dataframe containing methylation context data for genes.
+#' @param bin.size Integer specifying the number of genes in each bin for calculating
+#' running averages.
+#' @param shift.size Integer specifying the step size for the moving window when 
+#' calculating running averages.
+#' @param title Title for the dataset to be used as an annotation in plots. 
+#' Default is "MeCP2 KO".
 #'
-#' @return main analysis plots for mCA
+#' @return A list containing the results of the analysis and a combined ggplot object 
+#' with the generated plots (A, B, C, D) arranged in a composite figure.
 #' @noRd
-
+#'
+#' @examples
+#' \dontrun{
+#' count.file <- "path/to/your/whole_cell_counts.txt"
+#' degs.file <- "path/to/your/whole_cell_degs.txt"
+#' mCA_data <- readRDS("path/to/your/mca_data.RDS")
+#' bin.size <- 60
+#' shift.size <- 6
+#' title <- "Sample Analysis Title"
+#'
+#' analysis_results <- finalRunmCA(count.file = count.file, degs.file = degs.file,
+#'                                 mCA = mCA_data, bin.size = bin.size,
+#'                                 shift.size = shift.size, title = title)
+#' print(analysis_results$combined)
+#' }
 finalRunmCA <- function(count.file, degs.file, mCA, bin.size, shift.size,
                          title = "MeCP2 KO"){
   degs.dat <- read.table(file = degs.file, sep = "\t", stringsAsFactors = FALSE,

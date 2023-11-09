@@ -2,30 +2,44 @@
 % Please edit documentation in R/logofMeans.R
 \name{logofMeansBetweenABC}
 \alias{logofMeansBetweenABC}
-\title{Log of Means between three samples}
+\title{Calculate Log2 Fold Change Among Three Sets of Samples}
 \usage{
 logofMeansBetweenABC(dat, A.samples, B.samples, C.samples)
 }
 \arguments{
-\item{dat}{a dataframe. Differential analysis results from "DESeqCalculation"}
+\item{dat}{A dataframe or matrix with rows representing genes and columns representing 
+samples. It typically contains count data from RNA-seq experiments.}
 
-\item{A.samples}{First sample type}
+\item{A.samples}{A vector of column indices or names for the first sample group.}
 
-\item{B.samples}{Second sample type}
+\item{B.samples}{A vector of column indices or names for the second sample group.}
 
-\item{C.samples}{Third sample type}
+\item{C.samples}{A vector of column indices or names for the third sample group.}
 }
 \value{
-log2 fold change of means between three given samples
+A modified dataframe that includes additional columns for the mean expression 
+of each sample group, the crude fold change, and the log2 fold change based on the 
+differences between the sample means. Rows containing `NA` values after computation 
+are excluded from the output.
 }
 \description{
-Computes the mean of each sample, fold change, and log fold change.
+The function computes the average expression values for three sets of samples (A, B, and C) 
+and then calculates the fold change and log2 fold change using the differences between 
+these averages. This function is useful for RNA-seq data analysis where comparisons are 
+made across three different conditions or time points.
 }
 \examples{
-dat <- matrix(rnorm(600, sd = 0.3), ncol = 9)
+# Simulate RNA-seq count data for 100 genes across 9 samples
+set.seed(123) # for reproducibility
+dat <- matrix(rnbinom(n=900, mu=100, size=0.5), ncol=9)
+colnames(dat) <- c(paste("Sample_A", 1:3, sep=""), 
+                   paste("Sample_B", 1:3, sep=""), 
+                   paste("Sample_C", 1:3, sep=""))
+rownames(dat) <- paste("Gene", 1:100, sep="")
 dat <- as.data.frame(dat)
-logofMeansBetweenABC(dat = dat, A.samples = 1:3, B.samples = 4:6,
- C.samples = 7:9)
 
-
+# Calculate log2 fold change among the three sample groups
+logFC_results <- logofMeansBetweenABC(dat = dat, A.samples = 1:3, 
+                                      B.samples = 4:6, C.samples = 7:9)
+head(logFC_results)
 }

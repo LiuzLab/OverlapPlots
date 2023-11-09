@@ -2,52 +2,47 @@
 % Please edit documentation in R/DESeqCalculation.R
 \name{DESeqCalculation}
 \alias{DESeqCalculation}
-\title{DESeqCalculation}
+\title{Differential Expression Analysis Using DESeq2}
 \usage{
 DESeqCalculation(dat, genotypes, fc = 1.15)
 }
 \arguments{
-\item{dat}{RNAseq exon counts data. Table with samples in columns and gene
-in rows.}
+\item{dat}{A matrix with RNAseq exon count data where rows are genes and columns 
+are samples.}
 
-\item{genotypes}{factor WT and KO.}
+\item{genotypes}{A factor vector indicating the genotype of each sample, used 
+in the design formula for DESeq2.}
 
-\item{fc}{fold change.}
+\item{fc}{The fold change threshold for determining significant differential 
+expression. Default is 1.15.}
 }
 \value{
-Differential analysis results and plots.
+A list containing the DESeq2 results object, various ggplot and base 
+R plot objects for visualization, and a pheatmap object for heatmap visualization.
 }
 \description{
-"DESeq" wrapper to help the user to get count data.
-"DESeqCalculation" takes RNAseq exon counts data and genotypes. Performs
-intermediate calculations and results of differential gene expression
-analysis. Generates boxplots showing gene expression distributions per
-sample, PCAplots separating different KO and WT conditions, differential
-analysis gene expression of up and down regulated heatmaps with hierarchical
-clustering on samples and genes with euclidean and correlation distances
-respectively, MA plot (gene count vs fold change), histogram of p-values
-with base mean greater than 1, and returns results.
+A wrapper function for DESeq2 analysis tailored for RNA-seq exon count data. 
+The function executes the DESeq2 workflow, including size factor estimation, 
+normalization, and differential expression testing between two conditions, such as
+wild type (WT) and knockout (KO). It produces a series of diagnostic and 
+exploratory plots to visualize data quality and expression differences, including 
+boxplots, principal component analysis (PCA) plots, multi-dimensional scaling (MDS) 
+plots, MA plots, histograms of p-values, and heatmaps for top differentially expressed 
+genes.
 }
 \examples{
-# Generate arbitrary toy data
-dat <- matrix(rnbinom(n=5000, mu=100, size= 1/0.5),ncol=10)
-for (x in 1:250) {
-dat[x,] <- dat[x,] + sample(800:1200, 10, replace=TRUE)
-}
-for (x in 250:500) {
-dat[x,] <- dat[x,] + sample(0:100, 10, replace=TRUE)
-}
-for (x in 1:5) {
-dat[,x] <- dat[,x] + sample(800:1000, 5, replace=TRUE)
-}
-dat <- matrix(as.numeric(dat), ncol = ncol(dat))
-colnames(dat) <- c("MeCP2_WT_1",	"MeCP2_WT_2",	"MeCP2_WT_3",
-"MeCP2_WT_4",	"MeCP2_WT_5",	"MeCP2_KO_1",	"MeCP2_KO_2",	"MeCP2_KO_3",
-"MeCP2_KO_4",	"MeCP2_KO_5")
-vec <- as.character(seq(1,500, by = 1))
-row.names(dat) <- vec
-genotypes <- factor(c(rep("WT", 5), rep("KO", 5)), levels = c("KO", "WT"))
+\dontrun{
+# Simulate RNA-seq count data
+set.seed(123) # for reproducibility
+counts <- matrix(rpois(2000, lambda = 10), ncol = 10)
+colnames(counts) <- paste0("Sample", 1:10)
+rownames(counts) <- paste0("Gene", 1:200)
+genotypes <- factor(rep(c("WT", "KO"), each = 5))
 
-# Run Differential Analysis
-DESeqCalculation(dat = dat,genotypes = genotypes, fc = 1.15)
+# Perform the DESeq2 analysis
+deseq_results <- DESeqCalculation(dat = counts, genotypes = genotypes)
+
+# Explore the results
+print(deseq_results$plots$PCAplot)
+}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/overlap_wrappers.R
 \name{overlapWrapper}
 \alias{overlapWrapper}
-\title{wrapper around Overlap plots}
+\title{Overlap Plot Wrapper for Gene Expression Analysis}
 \usage{
 overlapWrapper(
   dat,
@@ -18,58 +18,65 @@ overlapWrapper(
 )
 }
 \arguments{
-\item{dat}{Differential analysis results from "DESeqCalculation"}
+\item{dat}{A matrix or dataframe containing the differential expression analysis
+results from `DESeqCalculation`. It should include gene names and log fold change
+values among other analysis results.}
 
-\item{refseq}{reference sequence}
+\item{refseq}{A dataframe containing reference sequence information that will be
+joined with `dat` on the gene names.}
 
-\item{KO.idx}{Treatment group index}
+\item{KO.idx}{Indices or column names in `dat` corresponding to the treatment group.}
 
-\item{WT.idx}{Control group index}
+\item{WT.idx}{Indices or column names in `dat` corresponding to the control group.}
 
-\item{WT1.idx}{WT1 index}
+\item{WT1.idx}{Subset indices within the control group for the first comparison.}
 
-\item{WT2.idx}{WT2 index}
+\item{WT2.idx}{Subset indices within the control group for the second comparison.}
 
-\item{bin.size}{bin size}
+\item{bin.size}{The size of the window (number of genes) over which to calculate
+the running average.}
 
-\item{shift.size}{shift size}
+\item{shift.size}{The number of genes to shift the window by for each calculation
+of the running average.}
 
-\item{confidenceinterval}{CI}
+\item{confidenceinterval}{The width of the confidence interval to be displayed on
+the plots. Defaults to 0.50 (50% confidence interval).}
 
-\item{shrink_lfc}{Shrink log2 fold changes}
+\item{shrink_lfc}{Logical indicating whether to use shrunken log2 fold changes. 
+Defaults to `FALSE`.}
 }
 \value{
-results and plots
+A list containing the following elements:
+\itemize{
+  \item{res}{A list returned from `overlayGabelsPlot` containing ggplot objects for the overlay plots.}
+  \item{plot}{A combined ggplot object with the running average plot and the p-value plot.}
+  \item{log2FC.length}{A dataframe with the gene names, log2 fold change, and gene length used for the plot.}
+}
 }
 \description{
-"Wrapper around overlap plots" takes "DESeqCalculation" results,
-k-mean clustering index groups, and computes running average
-plots (log2 fold change vs mean gene length).
-
-Uses Overlay Gabel's moving average function which calculates the mean of
-log2 fold change and genomic lengths. Computes p-values using student t-test
-function, and returns overlay line plots.
+This function acts as a wrapper for generating overlap plots from differential
+expression analysis results. It enriches the dataset with reference sequence
+information, computes log2 fold changes between different groups, and creates
+running average plots (log2 fold change vs mean gene length). It utilizes the
+`overlayGabelsPlot` function for plotting, which internally calculates running
+averages and p-values from a student's t-test, and then produces overlay line
+plots with confidence intervals.
 }
 \examples{
-## Load annotation dataset
 \dontrun{
-load(file = "../../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
+load(file = "path/to/mm10_ncbi-refSeqGene_Dec2019.RData")
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-## Load gene counts
-dat <- read.table(paste("../../dat/counts/GSE128178_10WT_",
-"10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt"),
-           sep = "\t", stringsAsFactors=FALSE, header = TRUE, row.names = 1)
-# Run DESeq analysis
+dat <- as.data.frame(matrix(runif(1000), ncol = 10))
+colnames(dat) <- c("gene1", "gene2", ..., "gene10")
+# Assume DESeqCalculation returns a dataframe like structure
 wholeCell.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
-mat <- wholeCell.KO$results[,c(8:27,1,3)]
+mat <- wholeCell.KO$results[, c(8:27, 1, 3)]
 colnames(mat)[21] <- "gene.name"
-## same cluster sizes
-grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
-## Generate overlap plots
-res1 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
-                        WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
-                        WT2.idx = grp.idx$WT.idx2, bin.size = 200,
-                        shift.size = 40)
-res1$plot
+grp.idx <- WTgrpKmeans(control_mat = mat[, 1:10])
+res <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+                      WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
+                      WT2.idx = grp.idx$WT.idx2, bin.size = 200,
+                      shift.size = 40, confidenceinterval = 0.50)
+print(res$plot)
 }
 }
