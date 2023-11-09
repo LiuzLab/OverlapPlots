@@ -2,7 +2,7 @@
 % Please edit documentation in R/overlay.mCA.R
 \name{overlaymC}
 \alias{overlaymC}
-\title{mC Overlay Plot}
+\title{Overlay Plots for Methylation and Gene Expression Analysis}
 \usage{
 overlaymC(
   mat,
@@ -15,36 +15,39 @@ overlaymC(
 )
 }
 \arguments{
-\item{mat}{dataframe with first column corresponding to comp.mat, second
-column to log FC, and third columns to gene length, the forth column contains
-the mCA.CA values, and last columns the gene names.}
+\item{mat}{A dataframe with columns corresponding to comparison matrix values (comp.mat),
+log fold change (logFC.crude), gene length, methylation values (mCA.CA), and gene names.}
 
-\item{bin.size}{bin size}
+\item{bin.size}{Numeric, the size of the bin for aggregating genes.}
 
-\item{shift.size}{shift size}
+\item{shift.size}{Numeric, the shift size for the moving window across the genes.}
 
-\item{length.type}{length type}
+\item{length.type}{Descriptive string of the length type being analyzed, typically "Gene".}
 
-\item{methyl.type}{methylation type}
+\item{methyl.type}{Descriptive string of the methylation type, typically something like "mCA/CA".}
 
-\item{comp.between1}{comp between}
+\item{comp.between1}{Descriptive string of the first condition or state being compared.}
 
-\item{comp.between2}{comp between}
+\item{comp.between2}{Descriptive string of the second condition or state being compared.}
 }
 \value{
-Overlay plots mC
+A list containing ggplot objects for the overlay plots.
 }
 \description{
-mC Overlay Plot
+This function generates overlay plots to analyze the relationship between methylation levels 
+(mCA/CA) and gene expression across different gene lengths. It uses binning to aggregate data points 
+and visualize trends in methylation and expression changes.
 }
 \examples{
-# generate toy data
+# Generating a toy dataset
+set.seed(123) # For reproducibility
 a <- runif(1000, min=-2, max=2)
 b <- runif(1000, min=-2, max=2)
 d <- runif(1000, min=0, max=0.05)
 c <- sample(2000:1000000, 1000, replace=TRUE)
-genes <- OpenRepGrid::randomWords(1000)
-df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c, mCA.CA = d,
-gene.name = genes)
-overlaymC(mat = df,bin.size = 60, shift.size = 6, methyl.type = "mCA/CA")
+genes <- replicate(1000, paste(sample(letters, 8, replace = TRUE), collapse = ""))
+df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c, mCA.CA = d, gene.name = genes)
+# Running the overlaymC function
+overlay_plots <- overlaymC(mat = df, bin.size = 60, shift.size = 6, methyl.type = "mCA/CA")
+# To view the plots, you would call each element from the list, e.g., print(overlay_plots$plot1)
 }

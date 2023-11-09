@@ -2,7 +2,7 @@
 % Please edit documentation in R/overlay.gabel.function.R
 \name{overlayGabelsPlot}
 \alias{overlayGabelsPlot}
-\title{Overlay Gabel's plot}
+\title{Overlay Gabel's Plot for Gene Expression Analysis}
 \usage{
 overlayGabelsPlot(
   mat,
@@ -14,32 +14,42 @@ overlayGabelsPlot(
 )
 }
 \arguments{
-\item{mat}{dataframe with first column corresponding to comp.mat, second
-column to log FC, and third columns to gene length.}
+\item{mat}{A dataframe where the first column is `comp.mat` representing comparison 
+matrix values, the second column is `log FC` for log fold change, and the third 
+column is `gene.length`.}
 
-\item{bin.size}{bin size}
+\item{bin.size}{Numeric, specifies the size of the bin for the analysis.}
 
-\item{shift.size}{shift size}
+\item{shift.size}{Numeric, indicates the shift size for the moving window 
+in the binning process.}
 
-\item{comp.between1}{comp between}
+\item{comp.between1}{String, description of the first condition or state being compared.}
 
-\item{comp.between2}{comp between}
+\item{comp.between2}{String, description of the second condition or state being compared.}
 
-\item{confidenceinterval}{Confidence interval to be displayed on plots}
+\item{confidenceinterval}{Numeric, the width of the confidence interval to be displayed 
+on the plot.}
 }
 \value{
-gabels plot
+A ggplot object that represents the Gabel's plot with a moving average 
+and confidence interval for gene expression analysis.
 }
 \description{
-Overlay Gabel's plot
+Creates an overlay plot that displays a moving average of log fold change (log FC) 
+across binned gene lengths. The plot includes a confidence interval around the moving average.
+This type of visualization helps in identifying trends in gene expression related to gene length.
 }
 \examples{
-# generate toy data
+# Generating a toy dataset
+set.seed(123) # For reproducibility
 a <- runif(1000, min=-2, max=2)
 b <- runif(1000, min=-2, max=2)
 c <- sample(2000:1000000, 1000, replace=TRUE)
 df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c)
-overlayGabelsPlot(mat = df,comp.between1 = "(WT/WT)",
-comp.between2 = "(KO/WT)",bin.size = 200,
-shift.size = 40, confidenceinterval=0.50)
+# Running the overlayGabelsPlot function
+gabels_plot <- overlayGabelsPlot(mat = df, comp.between1 = "(WT/WT)",
+                                 comp.between2 = "(KO/WT)", bin.size = 200,
+                                 shift.size = 40, confidenceinterval=0.50)
+# To display the plot
+print(gabels_plot)
 }

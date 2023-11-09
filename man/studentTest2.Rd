@@ -2,46 +2,44 @@
 % Please edit documentation in R/overlay.gabel.function.R
 \name{studentTest2}
 \alias{studentTest2}
-\title{p-values from 2 sample t-test}
+\title{Calculate P-Values from a Two-Sample T-Test}
 \usage{
 studentTest2(m1, m2, s1, s2, n1, n2 = n1, m0 = 0, equal.variance = FALSE)
 }
 \arguments{
-\item{m1}{the sample means}
+\item{m1}{The mean of the first sample.}
 
-\item{m2}{the sample means}
+\item{m2}{The mean of the second sample.}
 
-\item{s1}{the sample standard deviations}
+\item{s1}{The standard deviation of the first sample.}
 
-\item{s2}{the sample standard deviations}
+\item{s2}{The standard deviation of the second sample.}
 
-\item{n1}{the same sizes}
+\item{n1}{The size of the first sample.}
 
-\item{n2}{the same sizes}
+\item{n2}{The size of the second sample, defaulting to the size of the first sample (`n1`) if not specified.}
 
-\item{m0}{the null value for the difference in means to be tested for.
-Default is 0}
+\item{m0}{The hypothesized difference between the two means under the null hypothesis, default is 0.}
 
-\item{equal.variance}{whether or not to assume equal variance.
-Default is FALSE.}
+\item{equal.variance}{A logical flag indicating whether to assume equal variances for the two samples, 
+default is `FALSE`.}
 }
 \value{
-p-values
+The p-value resulting from the two-sample t-test.
 }
 \description{
-p-values from 2 sample t-test
+This function performs a two-sample t-test to compare the means of two groups.
+It calculates the t-statistic and the corresponding p-value, allowing for unequal 
+variances between the groups by default, a scenario often referred to as Welch's t-test.
 }
 \examples{
+# Generate random data for two samples
 a <- runif(30, min=-0.2, max=0.2)
 b <- runif(30, min=-0.2, max=0.2)
-astd <- runif(30, min=1, max=1.2)
-bstd <- runif(30, min=1.3, max=1.5)
-binwidth <- rep(c(200), each = 30)
-length <- runif(30, min=100, max=900)
-df <- data.frame(mat.mean1 = a, mat.mean2 = b, mat.sd.1 = astd,
-mat.sd.2 = bstd, bin.width = binwidth, mat.length = length)
-r <- as.matrix(df)
-r$pval <- apply(r, 1, function(r){
-studentTest2(m1 = r[1], m2 = r[2],
-            s1 = r[3], s2 = r[4], n1 = r[5])})
+a_std <- runif(30, min=1, max=1.2)
+b_std <- runif(30, min=1.3, max=1.5)
+n <- rep(30, 30)
+# Calculate p-values using the studentTest2 function
+p_values <- mapply(studentTest2, m1 = a, m2 = b, s1 = a_std, s2 = b_std, n1 = n)
+print(p_values)
 }

@@ -1,26 +1,38 @@
-## overlay plot
-#' Overlay Gabel's plot
+#' Overlay Gabel's Plot for Gene Expression Analysis
 #'
-#' @param mat dataframe with first column corresponding to comp.mat, second
-#' column to log FC, and third columns to gene length.
-#' @param bin.size bin size
-#' @param shift.size shift size
-#' @param comp.between1 comp between
-#' @param comp.between2 comp between
-#' @param confidenceinterval Confidence interval to be displayed on plots
+#' @description
+#' Creates an overlay plot that displays a moving average of log fold change (log FC) 
+#' across binned gene lengths. The plot includes a confidence interval around the moving average.
+#' This type of visualization helps in identifying trends in gene expression related to gene length.
 #'
-#' @return gabels plot
+#' @param mat A dataframe where the first column is `comp.mat` representing comparison 
+#' matrix values, the second column is `log FC` for log fold change, and the third 
+#' column is `gene.length`.
+#' @param bin.size Numeric, specifies the size of the bin for the analysis.
+#' @param shift.size Numeric, indicates the shift size for the moving window 
+#' in the binning process.
+#' @param comp.between1 String, description of the first condition or state being compared.
+#' @param comp.between2 String, description of the second condition or state being compared.
+#' @param confidenceinterval Numeric, the width of the confidence interval to be displayed 
+#' on the plot.
+#'
+#' @return A ggplot object that represents the Gabel's plot with a moving average 
+#' and confidence interval for gene expression analysis.
 #' @export
+#'
 #' @examples
-#' # generate toy data
-
+#' # Generating a toy dataset
+#' set.seed(123) # For reproducibility
 #' a <- runif(1000, min=-2, max=2)
 #' b <- runif(1000, min=-2, max=2)
 #' c <- sample(2000:1000000, 1000, replace=TRUE)
 #' df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c)
-#' overlayGabelsPlot(mat = df,comp.between1 = "(WT/WT)",
-#' comp.between2 = "(KO/WT)",bin.size = 200,
-#' shift.size = 40, confidenceinterval=0.50)
+#' # Running the overlayGabelsPlot function
+#' gabels_plot <- overlayGabelsPlot(mat = df, comp.between1 = "(WT/WT)",
+#'                                  comp.between2 = "(KO/WT)", bin.size = 200,
+#'                                  shift.size = 40, confidenceinterval=0.50)
+#' # To display the plot
+#' print(gabels_plot)
 overlayGabelsPlot <- function(mat, bin.size = 200, shift.size = 40,
                               comp.between1 = "", comp.between2 = "",
                               confidenceinterval = 0.50){
@@ -30,17 +42,43 @@ overlayGabelsPlot <- function(mat, bin.size = 200, shift.size = 40,
   return(p1)
 }
 
-#' Overlay Gabel's moving average function
+#' Overlay Moving Average Plot for Gene Expression Analysis
 #'
-#' @param dat matrix
-#' @param bin.size bin size
-#' @param shift.size shift size
-#' @param comp.between1 comp between
-#' @param comp.between2 comp between
-#' @param confidenceinterval Confidence interval to be displayed on plots
+#' @description
+#' Creates an overlay plot displaying moving averages of gene expression levels (log FC) 
+#' across binned gene lengths. The function orders genes by length, bins them, and calculates
+#' the mean log fold change and standard deviation within each bin. The overlay plot includes
+#' a line for the moving average and a shaded confidence interval around the average.
 #'
-#' @return overlay ggplots objects
+#' @param dat A matrix where the first column is `comp.mat`, representing comparison matrix 
+#' values, the second column is `log FC` for log fold change, and the third column is 
+#' `gene.length`.
+#' @param bin.size Numeric, the size of the bin for aggregating gene data.
+#' @param shift.size Numeric, the shift size for the moving window across the gene length.
+#' @param comp.between1 String, description of the first condition or group being compared.
+#' @param comp.between2 String, description of the second condition or group being compared.
+#' @param confidenceinterval Numeric, the confidence interval width for the moving average 
+#' plot. A value of 0.50 corresponds to a 50% confidence interval.
+#'
+#' @return A list of ggplot objects that represent different aspects of the gene expression 
+#' analysis. The `plot1` object shows the moving average lines with confidence intervals, 
+#' and `plot2` displays the -log10(p-value) across the gene length bins. The list also 
+#' contains a dataframe `bins.stat` with statistics for each bin and `bins.info` with 
+#' information such as the start and end of each bin and the count of genes with positive 
+#' and negative log fold changes.
 #' @noRd
+#'
+#' @examples
+#' # Assuming 'df' is a dataframe with the necessary structure:
+#' results <- overlayMovingAverageFunction(dat = df, bin.size = 60, shift.size = 6,
+#'                                         comp.between1 = "Condition1", 
+#'                                         comp.between2 = "Condition2", 
+#'                                         confidenceinterval = 0.50)
+#' # To plot the moving average with confidence interval:
+#' print(results$plot1)
+#' # To plot the -log10(p-value) across gene length bins:
+#' print(results$plot2)
+
 overlayMovingAverageFunction <- function(dat, bin.size, shift.size,
                                          comp.between1, comp.between2,
                                          confidenceinterval){
@@ -192,36 +230,36 @@ overlayMovingAverageFunction <- function(dat, bin.size, shift.size,
               bins.info = mean.info))
 }
 
-## p-values from 2 sample t-test; code adapted from http://bit.ly/2eqeYyO
-#' p-values from 2 sample t-test
+#' Calculate P-Values from a Two-Sample T-Test
 #'
-#' @param m1 the sample means
-#' @param m2 the sample means
-#' @param s1 the sample standard deviations
-#' @param s2 the sample standard deviations
-#' @param n1 the same sizes
-#' @param n2 the same sizes
-#' @param m0 the null value for the difference in means to be tested for.
-#' Default is 0
-#' @param equal.variance whether or not to assume equal variance.
-#' Default is FALSE.
+#' This function performs a two-sample t-test to compare the means of two groups.
+#' It calculates the t-statistic and the corresponding p-value, allowing for unequal 
+#' variances between the groups by default, a scenario often referred to as Welch's t-test.
 #'
-#' @return p-values
+#' @param m1 The mean of the first sample.
+#' @param m2 The mean of the second sample.
+#' @param s1 The standard deviation of the first sample.
+#' @param s2 The standard deviation of the second sample.
+#' @param n1 The size of the first sample.
+#' @param n2 The size of the second sample, defaulting to the size of the first sample (`n1`) if not specified.
+#' @param m0 The hypothesized difference between the two means under the null hypothesis, default is 0.
+#' @param equal.variance A logical flag indicating whether to assume equal variances for the two samples, 
+#' default is `FALSE`.
+#'
+#' @return The p-value resulting from the two-sample t-test.
 #' @export
 #'
 #' @examples
+#' # Generate random data for two samples
 #' a <- runif(30, min=-0.2, max=0.2)
 #' b <- runif(30, min=-0.2, max=0.2)
-#' astd <- runif(30, min=1, max=1.2)
-#' bstd <- runif(30, min=1.3, max=1.5)
-#' binwidth <- rep(c(200), each = 30)
-#' length <- runif(30, min=100, max=900)
-#' df <- data.frame(mat.mean1 = a, mat.mean2 = b, mat.sd.1 = astd,
-#' mat.sd.2 = bstd, bin.width = binwidth, mat.length = length)
-#' r <- as.matrix(df)
-#' r$pval <- apply(r, 1, function(r){
-#' studentTest2(m1 = r[1], m2 = r[2],
-#'             s1 = r[3], s2 = r[4], n1 = r[5])})
+#' a_std <- runif(30, min=1, max=1.2)
+#' b_std <- runif(30, min=1.3, max=1.5)
+#' n <- rep(30, 30)
+#' # Calculate p-values using the studentTest2 function
+#' p_values <- mapply(studentTest2, m1 = a, m2 = b, s1 = a_std, s2 = b_std, n1 = n)
+#' print(p_values)
+
 studentTest2 <- function(m1,m2,s1,s2,n1,n2=n1,m0=0,equal.variance=FALSE){
   if(equal.variance==FALSE){
     se <- sqrt(abs((s1^2/n1) + (s2^2/n2)))

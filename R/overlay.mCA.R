@@ -1,31 +1,36 @@
 ## overlay plot
 
-#' mC Overlay Plot
+#' Overlay Plots for Methylation and Gene Expression Analysis
 #'
-#' @param mat dataframe with first column corresponding to comp.mat, second
-#' column to log FC, and third columns to gene length, the forth column contains
-#'the mCA.CA values, and last columns the gene names.
-#' @param bin.size bin size
-#' @param shift.size shift size
-#' @param length.type length type
-#' @param methyl.type methylation type
-#' @param comp.between1 comp between
-#' @param comp.between2 comp between
+#' This function generates overlay plots to analyze the relationship between methylation levels 
+#' (mCA/CA) and gene expression across different gene lengths. It uses binning to aggregate data points 
+#' and visualize trends in methylation and expression changes.
 #'
-#' @return Overlay plots mC
+#' @param mat A dataframe with columns corresponding to comparison matrix values (comp.mat),
+#' log fold change (logFC.crude), gene length, methylation values (mCA.CA), and gene names.
+#' @param bin.size Numeric, the size of the bin for aggregating genes.
+#' @param shift.size Numeric, the shift size for the moving window across the genes.
+#' @param length.type Descriptive string of the length type being analyzed, typically "Gene".
+#' @param methyl.type Descriptive string of the methylation type, typically something like "mCA/CA".
+#' @param comp.between1 Descriptive string of the first condition or state being compared.
+#' @param comp.between2 Descriptive string of the second condition or state being compared.
+#'
+#' @return A list containing ggplot objects for the overlay plots.
 #' @export
 #'
 #' @examples
-#' # generate toy data
-
+#' # Generating a toy dataset
+#' set.seed(123) # For reproducibility
 #' a <- runif(1000, min=-2, max=2)
 #' b <- runif(1000, min=-2, max=2)
 #' d <- runif(1000, min=0, max=0.05)
 #' c <- sample(2000:1000000, 1000, replace=TRUE)
-#' genes <- OpenRepGrid::randomWords(1000)
-#' df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c, mCA.CA = d,
-#' gene.name = genes)
-#' overlaymC(mat = df,bin.size = 60, shift.size = 6, methyl.type = "mCA/CA")
+#' genes <- replicate(1000, paste(sample(letters, 8, replace = TRUE), collapse = ""))
+#' df <- data.frame(comp.mat = a, logFC.crude = b, gene.length = c, mCA.CA = d, gene.name = genes)
+#' # Running the overlaymC function
+#' overlay_plots <- overlaymC(mat = df, bin.size = 60, shift.size = 6, methyl.type = "mCA/CA")
+#' # To view the plots, you would call each element from the list, e.g., print(overlay_plots$plot1)
+
 overlaymC <- function(mat, bin.size = 200, shift.size = 40,
                        length.type = "Gene", methyl.type = "",
                        comp.between1 = "", comp.between2 = ""){
@@ -35,21 +40,54 @@ overlaymC <- function(mat, bin.size = 200, shift.size = 40,
   return(p1)
 }
 
-
-#' Overlay mC function
+#' Generates Overlay Plots for Methylation and Gene Expression Analysis
 #'
-#' @param dat dataframe with first column corresponding to comp.mat, second
-#' column to log FC, and third columns to gene length, the forth column contains
-#'the mCA.CA values, and last columns the gene names.
-#' @param bin.size bin size
-#' @param shift.size shift size
-#' @param length.type length type
-#' @param methyl.type methylation type
-#' @param comp.between1 comp between
-#' @param comp.between2 comp between
+#' This function creates a series of overlay plots to explore the relationship 
+#' between gene length, methylation values (mCA/CA), and gene expression levels.
+#' It bins the genes according to length and calculates mean expression levels and 
+#' methylation for each bin to identify trends across gene length categories.
 #'
-#' @return ggplot object
+#' @param dat A dataframe where the first column is comp.mat representing 
+#' comparison matrix values, the second column is log FC for log fold change, 
+#' the third column is gene length, the fourth column contains the mCA.CA values, 
+#' and the last column has the gene names.
+#' @param bin.size Numeric, specifies the size of the bin for the analysis.
+#' @param shift.size Numeric, indicates the shift size for the moving window 
+#' in the binning process.
+#' @param length.type A string indicating the type of length being analyzed 
+#' (typically "Gene").
+#' @param methyl.type A string indicating the type of methylation data being 
+#' analyzed.
+#' @param comp.between1 A string describing the first condition or group in 
+#' the comparison.
+#' @param comp.between2 A string describing the second condition or group in 
+#' the comparison.
+#'
+#' @return A list of ggplot objects, each representing a different type of 
+#' overlay plot for visualizing the binned methylation and gene expression data.
+#' Each plot serves a unique purpose in the analysis:
+#' - `overlapPlot`: Visualizes the relationship between mean log fold change 
+#'   and methylation values across all bins.
+#' - `mCAvGl_plot`: Shows how gene length varies with methylation values.
+#' - `plotBar`: A bar plot indicating the distribution of gene lengths within each bin.
+#' - `mCAvGl_inv_plot`: Similar to `mCAvGl_plot` but with inverted axes.
+#' - `diffPlot`: Boxplot of the differences in methylation between long and short genes.
+#' - `diff100kPlot`: Same as `diffPlot` but only for bins where the mean gene length is >= 100kb.
+#' - `mat1`: A dataframe containing summary statistics for each bin.
+#' - `mat2`: A list of dataframes, each corresponding to a bin and containing detailed gene data.
+#' - `dat`: The original dataset after preprocessing.
 #' @noRd
+#' 
+#' @examples
+#' # Assuming that 'df' is a dataframe structured as required by the function:
+#' result <- overlaymCFunction(dat = df, bin.size = 60, shift.size = 6, 
+#'                             length.type = "Gene", methyl.type = "mCA/CA",
+#'                             comp.between1 = "Condition1", comp.between2 = "Condition2")
+#' # To view the first plot
+#' print(result$overlapPlot)
+#' # To access the summary statistics for each bin
+#' head(result$mat1)
+
 
 overlaymCFunction <- function(dat, bin.size, shift.size,
                                 length.type, methyl.type,
