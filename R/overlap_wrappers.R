@@ -1,57 +1,54 @@
 #' Overlap Plot Wrapper for Gene Expression Analysis
 #'
-#' @description
-#' This function acts as a wrapper for generating overlap plots from differential
-#' expression analysis results. It enriches the dataset with reference sequence
-#' information, computes log2 fold changes between different groups, and creates
-#' running average plots (log2 fold change vs mean gene length). It utilizes the
-#' `overlayGabelsPlot` function for plotting, which internally calculates running
-#' averages and p-values from a student's t-test, and then produces overlay line
-#' plots with confidence intervals.
+#' This function is a specialized wrapper for generating overlap plots in the context of gene expression analysis. 
+#' It integrates DESeqCalculation results with k-means clustering index groups to compute running average plots, 
+#' illustrating the relationship between log2 fold change and mean gene length.
 #'
-#' @param dat A matrix or dataframe containing the differential expression analysis
-#' results from `DESeqCalculation`. It should include gene names and log fold change
-#' values among other analysis results.
-#' @param refseq A dataframe containing reference sequence information that will be
-#' joined with `dat` on the gene names.
-#' @param KO.idx Indices or column names in `dat` corresponding to the treatment group.
-#' @param WT.idx Indices or column names in `dat` corresponding to the control group.
-#' @param WT1.idx Subset indices within the control group for the first comparison.
-#' @param WT2.idx Subset indices within the control group for the second comparison.
-#' @param bin.size The size of the window (number of genes) over which to calculate
-#' the running average.
-#' @param shift.size The number of genes to shift the window by for each calculation
-#' of the running average.
-#' @param confidenceinterval The width of the confidence interval to be displayed on
-#' the plots. Defaults to 0.50 (50% confidence interval).
-#' @param shrink_lfc Logical indicating whether to use shrunken log2 fold changes. 
-#' Defaults to `FALSE`.
+#' The function employs Overlay Gabel's moving average technique to calculate the mean values of log2 fold change 
+#' and genomic lengths. It also computes p-values using the student t-test. The final output includes overlay line plots 
+#' that visually represent these computations.
 #'
-#' @return A list containing the following elements:
-#' \itemize{
-#'   \item{res}{A list returned from `overlayGabelsPlot` containing ggplot objects for the overlay plots.}
-#'   \item{plot}{A combined ggplot object with the running average plot and the p-value plot.}
-#'   \item{log2FC.length}{A dataframe with the gene names, log2 fold change, and gene length used for the plot.}
-#' }
+#' @param dat Differential analysis results from "DESeqCalculation". It's expected to be a data frame or matrix with rows 
+#' representing genes and columns representing different samples or experimental conditions.
+#' @param refseq A reference sequence dataset, which should align with the genes represented in the 'dat' parameter.
+#' @param KO.idx Treatment group index specifying the columns in 'dat' corresponding to the Knock-Out (KO) group.
+#' @param WT.idx Control group index specifying the columns in 'dat' corresponding to the Wild-Type (WT) group.
+#' @param WT1.idx WT1 index for subgroup analysis within the control group.
+#' @param WT2.idx WT2 index for another subgroup within the control group.
+#' @param bin.size An integer specifying the bin size for the moving average calculation.
+#' @param shift.size An integer specifying the shift size for the moving average calculation.
+#' @param confidenceinterval The confidence interval for the t-test calculations, defaulting to 0.50.
+#' @param shrink_lfc A boolean indicating whether to shrink log2 fold changes, defaulting to FALSE.
+#'
+#' @return A list containing the results of the analysis, the generated plot, and the log2 fold change data.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' load(file = "path/to/mm10_ncbi-refSeqGene_Dec2019.RData")
+#' # Loading necessary datasets
+#' load(file = "../../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
 #' genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-#' dat <- as.data.frame(matrix(runif(1000), ncol = 10))
-#' colnames(dat) <- c("gene1", "gene2", ..., "gene10")
-#' # Assume DESeqCalculation returns a dataframe like structure
+#'
+#' # Reading and preparing gene count data
+#' dat <- read.table(paste("../../dat/counts/GSE128178_10WT_",
+#'                         "10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt"),
+#'                  sep = "\t", stringsAsFactors=FALSE, header = TRUE, row.names = 1)
+#' # Running DESeq analysis
 #' wholeCell.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
-#' mat <- wholeCell.KO$results[, c(8:27, 1, 3)]
+#' mat <- wholeCell.KO$results[,c(8:27,1,3)]
 #' colnames(mat)[21] <- "gene.name"
-#' grp.idx <- WTgrpKmeans(control_mat = mat[, 1:10])
-#' res <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
-#'                       WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
-#'                       WT2.idx = grp.idx$WT.idx2, bin.size = 200,
-#'                       shift.size = 40, confidenceinterval = 0.50)
-#' print(res$plot)
+#'
+#' # K-means clustering for subgroup analysis
+#' grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
+#'
+#' # Generating and visualizing overlap plots
+#' res1 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+#'                        WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
+#'                        WT2.idx = grp.idx$WT.idx2, bin.size = 200,
+#'                        shift.size = 40)
+#' print(res1$plot)
 #' }
+
 overlapWrapper <- function(dat, refseq, KO.idx, WT.idx, WT1.idx, WT2.idx,
                             bin.size, shift.size, confidenceinterval = 0.50,
                            shrink_lfc = FALSE){
@@ -135,41 +132,43 @@ WTgrpKmeans <- function(control_mat, centers = 2, iter.max = 1000){
 #' Equal Size K-Means Clustering on Control Group Data
 #'
 #' @description
-#' Performs a variation of k-means clustering on the control (WT) subset from 
-#' differential expression analysis results to create clusters of approximately 
-#' equal size. This method modifies the standard k-means approach by ordering 
-#' points based on their distance to the closest center minus the distance to 
-#' the farthest cluster and then assigns each point to the best cluster in this order.
-#' The method aims to address the challenge of unequal cluster sizes often 
-#' encountered in standard k-means.
+#' `WTgrpKmeansEqualSize` function applies a modified version of k-means clustering 
+#' to control (WT) group data from differential expression analysis. This adaptation 
+#' is designed to create clusters of approximately equal size, a common challenge 
+#' in standard k-means clustering. It achieves this by assigning points to clusters 
+#' based on their relative distances to the nearest and farthest cluster centers, 
+#' thereby ensuring a more balanced distribution among clusters.
 #'
-#' @param control_mat A matrix or dataframe containing the control (WT) subset 
-#' from differential expression analysis results. Rows correspond to genes and 
-#' columns to samples.
-#' @param centers The desired number of clusters to find within the control data. 
-#' Defaults to 2.
-#' @param iter.max The maximum number of iterations allowed for the k-means 
-#' algorithm. Defaults to 1000.
+#' @param control_mat A matrix or dataframe representing the control (WT) subset 
+#' from differential expression analysis. Rows should correspond to genes and 
+#' columns to samples. The data structure should facilitate computation of distances 
+#' between samples and cluster centers.
+#' @param centers The number of clusters to be generated. The default value is 2. 
+#' It should be a positive integer less than the number of samples in control_mat.
+#' @param iter.max The maximum number of iterations for the k-means algorithm. 
+#' This parameter allows control over the computational intensity of the function. 
+#' The default value is 1000.
 #'
-#' @return A list containing two elements: `WT.idx1` and `WT.idx2`, which are 
-#' indices of the control samples assigned to clusters 1 and 2, respectively.
+#' @return A list containing indices of the control samples assigned to each cluster. 
+#' The list has two elements: `WT.idx1` for the first cluster and `WT.idx2` for the 
+#' second cluster. These indices can be used for further subgroup analyses within the 
+#' control group.
 #' @export
 #'
 #' @examples
-#' # Simulate gene expression data for a control group
-#' set.seed(123) # For reproducibility
-#' control_data <- rbind(
-#'   matrix(rnorm(1000, sd = 0.3), ncol = 10),
-#'   matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10)
-#' )
-#' colnames(control_data) <- paste0("Sample", 1:10)
-#' rownames(control_data) <- paste0("Gene", 1:100)
-#'
-#' # Perform equal size k-means clustering
-#' kmeans_results <- WTgrpKmeansEqualSize(control_mat = control_data)
-#' 
-#' # kmeans_results$WT.idx1 contains indices of samples in cluster 1
-#' # kmeans_results$WT.idx2 contains indices of samples in cluster 2
+#' \dontrun{
+#' # Example dataset creation
+#' mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+#'             matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+#' # Applying the equal size k-means clustering
+#' result <- WTgrpKmeansEqualSize(control_mat = mat)
+#' # Displaying the indices of the two clusters
+#' print(result$WT.idx1)
+#' print(result$WT.idx2)
+#' }
+#' mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+#' matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+#' WTgrpKmeans(control_mat = mat)
 
 WTgrpKmeansEqualSize <- function(control_mat, centers = 2, iter.max = 1000){
   size <- ceiling(nrow(t(control_mat))/centers)

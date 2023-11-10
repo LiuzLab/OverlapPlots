@@ -18,65 +18,63 @@ overlapWrapper(
 )
 }
 \arguments{
-\item{dat}{A matrix or dataframe containing the differential expression analysis
-results from `DESeqCalculation`. It should include gene names and log fold change
-values among other analysis results.}
+\item{dat}{Differential analysis results from "DESeqCalculation". It's expected to be a data frame or matrix with rows 
+representing genes and columns representing different samples or experimental conditions.}
 
-\item{refseq}{A dataframe containing reference sequence information that will be
-joined with `dat` on the gene names.}
+\item{refseq}{A reference sequence dataset, which should align with the genes represented in the 'dat' parameter.}
 
-\item{KO.idx}{Indices or column names in `dat` corresponding to the treatment group.}
+\item{KO.idx}{Treatment group index specifying the columns in 'dat' corresponding to the Knock-Out (KO) group.}
 
-\item{WT.idx}{Indices or column names in `dat` corresponding to the control group.}
+\item{WT.idx}{Control group index specifying the columns in 'dat' corresponding to the Wild-Type (WT) group.}
 
-\item{WT1.idx}{Subset indices within the control group for the first comparison.}
+\item{WT1.idx}{WT1 index for subgroup analysis within the control group.}
 
-\item{WT2.idx}{Subset indices within the control group for the second comparison.}
+\item{WT2.idx}{WT2 index for another subgroup within the control group.}
 
-\item{bin.size}{The size of the window (number of genes) over which to calculate
-the running average.}
+\item{bin.size}{An integer specifying the bin size for the moving average calculation.}
 
-\item{shift.size}{The number of genes to shift the window by for each calculation
-of the running average.}
+\item{shift.size}{An integer specifying the shift size for the moving average calculation.}
 
-\item{confidenceinterval}{The width of the confidence interval to be displayed on
-the plots. Defaults to 0.50 (50% confidence interval).}
+\item{confidenceinterval}{The confidence interval for the t-test calculations, defaulting to 0.50.}
 
-\item{shrink_lfc}{Logical indicating whether to use shrunken log2 fold changes. 
-Defaults to `FALSE`.}
+\item{shrink_lfc}{A boolean indicating whether to shrink log2 fold changes, defaulting to FALSE.}
 }
 \value{
-A list containing the following elements:
-\itemize{
-  \item{res}{A list returned from `overlayGabelsPlot` containing ggplot objects for the overlay plots.}
-  \item{plot}{A combined ggplot object with the running average plot and the p-value plot.}
-  \item{log2FC.length}{A dataframe with the gene names, log2 fold change, and gene length used for the plot.}
-}
+A list containing the results of the analysis, the generated plot, and the log2 fold change data.
 }
 \description{
-This function acts as a wrapper for generating overlap plots from differential
-expression analysis results. It enriches the dataset with reference sequence
-information, computes log2 fold changes between different groups, and creates
-running average plots (log2 fold change vs mean gene length). It utilizes the
-`overlayGabelsPlot` function for plotting, which internally calculates running
-averages and p-values from a student's t-test, and then produces overlay line
-plots with confidence intervals.
+This function is a specialized wrapper for generating overlap plots in the context of gene expression analysis. 
+It integrates DESeqCalculation results with k-means clustering index groups to compute running average plots, 
+illustrating the relationship between log2 fold change and mean gene length.
+}
+\details{
+The function employs Overlay Gabel's moving average technique to calculate the mean values of log2 fold change 
+and genomic lengths. It also computes p-values using the student t-test. The final output includes overlay line plots 
+that visually represent these computations.
 }
 \examples{
 \dontrun{
-load(file = "path/to/mm10_ncbi-refSeqGene_Dec2019.RData")
+# Loading necessary datasets
+load(file = "../../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-dat <- as.data.frame(matrix(runif(1000), ncol = 10))
-colnames(dat) <- c("gene1", "gene2", ..., "gene10")
-# Assume DESeqCalculation returns a dataframe like structure
+
+# Reading and preparing gene count data
+dat <- read.table(paste("../../dat/counts/GSE128178_10WT_",
+                        "10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt"),
+                 sep = "\t", stringsAsFactors=FALSE, header = TRUE, row.names = 1)
+# Running DESeq analysis
 wholeCell.KO <- DESeqCalculation(dat = dat, genotypes = genotypes, fc = 1.15)
-mat <- wholeCell.KO$results[, c(8:27, 1, 3)]
+mat <- wholeCell.KO$results[,c(8:27,1,3)]
 colnames(mat)[21] <- "gene.name"
-grp.idx <- WTgrpKmeans(control_mat = mat[, 1:10])
-res <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
-                      WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
-                      WT2.idx = grp.idx$WT.idx2, bin.size = 200,
-                      shift.size = 40, confidenceinterval = 0.50)
-print(res$plot)
+
+# K-means clustering for subgroup analysis
+grp.idx <- WTgrpKmeans(control_mat = mat[,1:10])
+
+# Generating and visualizing overlap plots
+res1 <- overlapWrapper(dat = mat, refseq = refseq, KO.idx = c(11:20),
+                       WT.idx = c(1:10), WT1.idx = grp.idx$WT.idx1,
+                       WT2.idx = grp.idx$WT.idx2, bin.size = 200,
+                       shift.size = 40)
+print(res1$plot)
 }
 }

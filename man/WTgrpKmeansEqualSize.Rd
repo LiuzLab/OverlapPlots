@@ -7,42 +7,44 @@
 WTgrpKmeansEqualSize(control_mat, centers = 2, iter.max = 1000)
 }
 \arguments{
-\item{control_mat}{A matrix or dataframe containing the control (WT) subset 
-from differential expression analysis results. Rows correspond to genes and 
-columns to samples.}
+\item{control_mat}{A matrix or dataframe representing the control (WT) subset 
+from differential expression analysis. Rows should correspond to genes and 
+columns to samples. The data structure should facilitate computation of distances 
+between samples and cluster centers.}
 
-\item{centers}{The desired number of clusters to find within the control data. 
-Defaults to 2.}
+\item{centers}{The number of clusters to be generated. The default value is 2. 
+It should be a positive integer less than the number of samples in control_mat.}
 
-\item{iter.max}{The maximum number of iterations allowed for the k-means 
-algorithm. Defaults to 1000.}
+\item{iter.max}{The maximum number of iterations for the k-means algorithm. 
+This parameter allows control over the computational intensity of the function. 
+The default value is 1000.}
 }
 \value{
-A list containing two elements: `WT.idx1` and `WT.idx2`, which are 
-indices of the control samples assigned to clusters 1 and 2, respectively.
+A list containing indices of the control samples assigned to each cluster. 
+The list has two elements: `WT.idx1` for the first cluster and `WT.idx2` for the 
+second cluster. These indices can be used for further subgroup analyses within the 
+control group.
 }
 \description{
-Performs a variation of k-means clustering on the control (WT) subset from 
-differential expression analysis results to create clusters of approximately 
-equal size. This method modifies the standard k-means approach by ordering 
-points based on their distance to the closest center minus the distance to 
-the farthest cluster and then assigns each point to the best cluster in this order.
-The method aims to address the challenge of unequal cluster sizes often 
-encountered in standard k-means.
+`WTgrpKmeansEqualSize` function applies a modified version of k-means clustering 
+to control (WT) group data from differential expression analysis. This adaptation 
+is designed to create clusters of approximately equal size, a common challenge 
+in standard k-means clustering. It achieves this by assigning points to clusters 
+based on their relative distances to the nearest and farthest cluster centers, 
+thereby ensuring a more balanced distribution among clusters.
 }
 \examples{
-# Simulate gene expression data for a control group
-set.seed(123) # For reproducibility
-control_data <- rbind(
-  matrix(rnorm(1000, sd = 0.3), ncol = 10),
-  matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10)
-)
-colnames(control_data) <- paste0("Sample", 1:10)
-rownames(control_data) <- paste0("Gene", 1:100)
-
-# Perform equal size k-means clustering
-kmeans_results <- WTgrpKmeansEqualSize(control_mat = control_data)
-
-# kmeans_results$WT.idx1 contains indices of samples in cluster 1
-# kmeans_results$WT.idx2 contains indices of samples in cluster 2
+\dontrun{
+# Example dataset creation
+mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+            matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+# Applying the equal size k-means clustering
+result <- WTgrpKmeansEqualSize(control_mat = mat)
+# Displaying the indices of the two clusters
+print(result$WT.idx1)
+print(result$WT.idx2)
+}
+mat <- rbind(matrix(rnorm(1000, sd = 0.3), ncol = 10),
+matrix(rnorm(1000, mean = 1, sd = 0.3), ncol = 10))
+WTgrpKmeans(control_mat = mat)
 }
