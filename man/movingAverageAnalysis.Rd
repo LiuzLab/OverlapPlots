@@ -57,4 +57,15 @@ analysis_results <- movingAverageAnalysis(dat = countsfile, genotypes = genotype
                                          title = "KO/WT whole cell dataset")
 print(analysis_results$overlapPlots$combined)
 }
+library(OverlapPlots)
+data(countsfile)
+data(refseq)
+data(degsfile)
+dat <- countsfile
+degs.dat <- degsfile
+genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
+bin.size <- 60
+shift.size <- 6
+wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,
+                        title = "KO/WT whole cell dataset")
 }

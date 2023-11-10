@@ -182,7 +182,7 @@ movingAverageAnalysis <- function(dat, genotypes,  degs.dat, bin.size, shift.siz
 #' mCA.sub <- mCA[,c(1,6,7)]
 #' mCA.wholeCell.KO <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.sub,
 #'                                bin.size, shift.size,
-#'             
+#'                         title = "KO/WT whole cell dataset")
 
 
 movingAverageAnalysismCA <- function(count.file, degs.dat, mCA, bin.size, shift.size,

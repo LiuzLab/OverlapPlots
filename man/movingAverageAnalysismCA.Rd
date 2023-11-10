@@ -63,4 +63,23 @@ mCA.results <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.
                                         title = "KO/WT whole cell dataset")
 print(mCA.results$combined)
 }
+library(OverlapPlots)
+data(countsfile)
+data(refseq)
+data(degsfile)
+data(mCA)
+dat <- countsfile
+degs.dat <- degsfile
+genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
+bin.size <- 60
+shift.size <- 6
+wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,
+                        title = "KO/WT whole cell dataset")
+mCA <- mCA[mCA$CA >= 5,]
+mCA <- mCA[mCA$gene.length >= 4500,]
+mCA$mCA.CA <- mCA$mCA/mCA$CA
+mCA.sub <- mCA[,c(1,6,7)]
+mCA.wholeCell.KO <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.sub,
+                               bin.size, shift.size,
+                        title = "KO/WT whole cell dataset")
 }
