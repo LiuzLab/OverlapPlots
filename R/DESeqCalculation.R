@@ -35,6 +35,27 @@
 #' # Explore the results
 #' print(deseq_results$plots$PCAplot)
 #' }
+#' # Generate arbitrary toy data
+#' dat <- matrix(rnbinom(n=5000, mu=100, size= 1/0.5),ncol=10)
+#' for (x in 1:250) {
+#' dat[x,] <- dat[x,] + sample(800:1200, 10, replace=TRUE)
+#' }
+#' for (x in 250:500) {
+#' dat[x,] <- dat[x,] + sample(0:100, 10, replace=TRUE)
+#' }
+#' for (x in 1:5) {
+#' dat[,x] <- dat[,x] + sample(800:1000, 5, replace=TRUE)
+#' }
+#' dat <- matrix(as.numeric(dat), ncol = ncol(dat))
+#' colnames(dat) <- c("MeCP2_WT_1",	"MeCP2_WT_2",	"MeCP2_WT_3",
+#' "MeCP2_WT_4",	"MeCP2_WT_5",	"MeCP2_KO_1",	"MeCP2_KO_2",	"MeCP2_KO_3",
+#' "MeCP2_KO_4",	"MeCP2_KO_5")
+#' vec <- as.character(seq(1,500, by = 1))
+#' row.names(dat) <- vec
+#' genotypes <- factor(c(rep("WT", 5), rep("KO", 5)), levels = c("KO", "WT"))
+#'
+#' # Run Differential Analysis
+#' DESeqCalculation(dat = dat,genotypes = genotypes, fc = 1.15)
 DESeqCalculation <- function(dat, genotypes, fc = 1.15){
   colData <- data.frame(samples = colnames(dat), genotypes = factor(genotypes),
                         row.names = colnames(dat))

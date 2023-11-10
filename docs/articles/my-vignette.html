@@ -232,8 +232,8 @@ Boxer et al Dataset</h1>
 <span id="cb3-134"><a href="#cb3-134" tabindex="-1"></a>   yaml                   <span class="dv">2</span>.<span class="fl">3.7</span>      [<span class="dv">90</span>m2023<span class="dv">-01-23</span> [<span class="dv">39</span>m  [<span class="dv">90</span>m[<span class="dv">3</span>] [<span class="dv">39</span>m  [<span class="dv">90</span><span class="fu">mCRAN</span> (R <span class="dv">4</span>.<span class="fl">3.0</span>) [<span class="dv">39</span>m</span>
 <span id="cb3-135"><a href="#cb3-135" tabindex="-1"></a>   zlibbioc               <span class="dv">1</span>.<span class="fl">46.0</span>     [<span class="dv">90</span>m2023<span class="dv">-04-25</span> [<span class="dv">39</span>m  [<span class="dv">90</span>m[<span class="dv">3</span>] [<span class="dv">39</span>m  [<span class="dv">90</span>mBioconductor [<span class="dv">39</span>m</span>
 <span id="cb3-136"><a href="#cb3-136" tabindex="-1"></a></span>
-<span id="cb3-137"><a href="#cb3-137" tabindex="-1"></a> [<span class="dv">90</span>m [<span class="dv">1</span>] C<span class="sc">:</span><span class="er">/</span>Users<span class="sc">/</span>danie<span class="sc">/</span>AppData<span class="sc">/</span>Local<span class="sc">/</span>Temp<span class="sc">/</span>RtmpqCcqdL<span class="sc">/</span>temp_libpath15302a7846a6 [<span class="dv">39</span>m</span>
-<span id="cb3-138"><a href="#cb3-138" tabindex="-1"></a> [<span class="dv">90</span>m [<span class="dv">2</span>] C<span class="sc">:</span><span class="er">/</span>Users<span class="sc">/</span>danie<span class="sc">/</span>AppData<span class="sc">/</span>Local<span class="sc">/</span>Temp<span class="sc">/</span>RtmpqCcqdL<span class="sc">/</span>temp_libpath153030664aea [<span class="dv">39</span>m</span>
+<span id="cb3-137"><a href="#cb3-137" tabindex="-1"></a> [<span class="dv">90</span>m [<span class="dv">1</span>] C<span class="sc">:</span><span class="er">/</span>Users<span class="sc">/</span>danie<span class="sc">/</span>AppData<span class="sc">/</span>Local<span class="sc">/</span>Temp<span class="sc">/</span>Rtmp44kSiw<span class="sc">/</span>temp_libpath1810246c52df [<span class="dv">39</span>m</span>
+<span id="cb3-138"><a href="#cb3-138" tabindex="-1"></a> [<span class="dv">90</span>m [<span class="dv">2</span>] C<span class="sc">:</span><span class="er">/</span>Users<span class="sc">/</span>danie<span class="sc">/</span>AppData<span class="sc">/</span>Local<span class="sc">/</span>Temp<span class="sc">/</span>Rtmp44kSiw<span class="sc">/</span>temp_libpath18101917110 [<span class="dv">39</span>m</span>
 <span id="cb3-139"><a href="#cb3-139" tabindex="-1"></a> [<span class="dv">90</span>m [<span class="dv">3</span>] C<span class="sc">:</span><span class="er">/</span>Users<span class="sc">/</span>danie<span class="sc">/</span>AppData<span class="sc">/</span>Local<span class="sc">/</span>R<span class="sc">/</span>win<span class="sc">-</span>library<span class="sc">/</span><span class="fl">4.3</span> [<span class="dv">39</span>m</span>
 <span id="cb3-140"><a href="#cb3-140" tabindex="-1"></a> [<span class="dv">90</span>m [<span class="dv">4</span>] C<span class="sc">:</span><span class="er">/</span>Program Files<span class="sc">/</span>R<span class="sc">/</span>R<span class="dv">-4</span>.<span class="fl">3.1</span><span class="sc">/</span>library [<span class="dv">39</span>m</span>
 <span id="cb3-141"><a href="#cb3-141" tabindex="-1"></a></span>
@@ -499,8 +499,11 @@ logFC from Degs from DESeq2</p>
 <span>                        WT.idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>, WT1.idx <span class="op">=</span> <span class="va">grp.idx</span><span class="op">$</span><span class="va">WT.idx1</span>,</span>
 <span>                        WT2.idx <span class="op">=</span> <span class="va">grp.idx</span><span class="op">$</span><span class="va">WT.idx2</span>, bin.size <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>                        shift.size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Control Group 1: 1 2 3 4 10 </span></span>
-<span><span class="co">#&gt; Control Group 2: 5 6 7 8 9</span></span>
+<span><span class="co">#&gt; Control Group 1: 5 6 7 8 9 </span></span>
+<span><span class="co">#&gt; Control Group 2: 1 2 3 4 10</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Warning: Directionality issue</span></span>
+<span><span class="co">#&gt; Therefore, inter-change numerator and denominator for the calculation of logFC of control samples</span></span>
 <span><span class="va">res7</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <p><img src="my-vignette_files/figure-html/unnamed-chunk-24-1.png" width="700">
 Using the DEGs list</p>
@@ -541,8 +544,11 @@ Using the DEGs list</p>
 <span>                        WT.idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>, WT1.idx <span class="op">=</span> <span class="va">grp.idx</span><span class="op">$</span><span class="va">WT.idx1</span>,</span>
 <span>                        WT2.idx <span class="op">=</span> <span class="va">grp.idx</span><span class="op">$</span><span class="va">WT.idx2</span>, bin.size <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>                        shift.size <span class="op">=</span> <span class="fl">4</span>, shrink_lfc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Control Group 1: 1 2 3 4 10 </span></span>
-<span><span class="co">#&gt; Control Group 2: 5 6 7 8 9</span></span>
+<span><span class="co">#&gt; Control Group 1: 5 6 7 8 9 </span></span>
+<span><span class="co">#&gt; Control Group 2: 1 2 3 4 10</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Warning: Directionality issue</span></span>
+<span><span class="co">#&gt; Therefore, inter-change numerator and denominator for the calculation of logFC of control samples</span></span>
 <span><span class="va">res8</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <p><img src="my-vignette_files/figure-html/unnamed-chunk-27-1.png" width="700">
 logFC from Degs from DESeq2</p>
@@ -553,8 +559,11 @@ logFC from Degs from DESeq2</p>
 <span>                        WT.idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>, WT1.idx <span class="op">=</span> <span class="va">grp.idx</span><span class="op">$</span><span class="va">WT.idx1</span>,</span>
 <span>                        WT2.idx <span class="op">=</span> <span class="va">grp.idx</span><span class="op">$</span><span class="va">WT.idx2</span>, bin.size <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>                        shift.size <span class="op">=</span> <span class="fl">4</span>, shrink_lfc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Control Group 1: 1 2 3 4 10 </span></span>
-<span><span class="co">#&gt; Control Group 2: 5 6 7 8 9</span></span>
+<span><span class="co">#&gt; Control Group 1: 5 6 7 8 9 </span></span>
+<span><span class="co">#&gt; Control Group 2: 1 2 3 4 10</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Warning: Directionality issue</span></span>
+<span><span class="co">#&gt; Therefore, inter-change numerator and denominator for the calculation of logFC of control samples</span></span>
 <span><span class="va">res9</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <p><img src="my-vignette_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
