@@ -13,9 +13,6 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/my-vignette.html</loc>
-  </url>
-  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -31,12 +28,6 @@
     <loc>/reference/WTgrpKmeansEqualSize.html</loc>
   </url>
   <url>
-    <loc>/reference/countsfile.html</loc>
-  </url>
-  <url>
-    <loc>/reference/degsfile.html</loc>
-  </url>
-  <url>
     <loc>/reference/gabelsPlot.html</loc>
   </url>
   <url>
@@ -47,9 +38,6 @@
   </url>
   <url>
     <loc>/reference/logofMeansBetweenABC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mCA.html</loc>
   </url>
   <url>
     <loc>/reference/movingAverageAnalysis.html</loc>
@@ -68,9 +56,6 @@
   </url>
   <url>
     <loc>/reference/overlaymC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/refseq.html</loc>
   </url>
   <url>
     <loc>/reference/studentTest2.html</loc>
