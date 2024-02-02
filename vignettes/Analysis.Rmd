@@ -50,9 +50,9 @@ print(getwd())
 ```
 Load annotation dataset reference sequence gene
 ```{r}
-load(file = "../dat-info/mm10_ncbi-refSeqGene_Dec2019.RData")
+load(file = system.file("extdata","dat-info","mm10_ncbi-refSeqGene_Dec2019.RData", package = "OverlapPlots"))
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
-mCA <- data.frame(readRDS("../dat/mCA/CAperGene_10wk_boxer.RDS"), stringsAsFactors = FALSE)
+mCA <- data.frame(readRDS(system.file("extdata","dat","mCA","CAperGene_10wk_boxer.RDS", package = "OverlapPlots")), stringsAsFactors = FALSE)
 mCA <- mCA[mCA$CA >= 5,]
 mCA <- mCA[mCA$gene.length >= 4500,]
 mCA$mCA.CA <- mCA$mCA/mCA$CA
@@ -61,8 +61,17 @@ mCA.sub <- mCA[,c(1,6,7)]
 overlap plots -- mean(log2FC) vs mean(gene length)
 ```{r}
 ## KO/WT whole cell dataset (ref: Fig 1D Boxer et al. Mol Cell 2020)
-count.file <- "../dat/counts/GSE128178_10WT_10MeCP2_KO_whole_cell_RNAseq_exon_counts.txt"
-degs.file <- "../dat/DEGs/KO-WT_whole-cell_RNA-seq.txt"
+count.file <- readRDS(system.file("extdata","dat","counts","GSE128178_10WT_10MeCP2_KO_whole_cell_RNAseq_exon_counts.rds", package = "OverlapPlots"))
+degs.file <- readRDS(system.file("extdata","dat","DEGs","KO-WT_whole-cell_RNA-seq.rds", package = "OverlapPlots"))
+
+# DECOMPRESSION RDS files, input must be TXT
+output_file <- "output_count_file.txt"
+write.table(count.file, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE)
+count.file <- output_file
+output_file <- "output_DEGs_file.txt"
+write.table(degs.file, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE)
+degs.file <- output_file
+
 bin.size <- 60
 shift.size <- 6
 wholeCell.KO <- finalRun(count.file, genotypes, degs.file, bin.size, shift.size,
@@ -75,8 +84,17 @@ mCA.wholeCell.KO$combined
 rm(count.file, degs.file)
 
 ## KO/WT nuclear dataset  (ref: Fig 2E Boxer et al. Mol Cell 2020)
-count.file <- "../dat/counts/GSE128178_10WT_10MeCP2_KO_nuclear_RNAseq_gene_body_counts.txt"
-degs.file <- "../dat/DEGs/KO-WT_nuclear_RNA-seq.txt"
+count.file <- readRDS(system.file("extdata","dat","counts","GSE128178_10WT_10MeCP2_KO_nuclear_RNAseq_gene_body_counts.rds", package = "OverlapPlots"))
+degs.file <- readRDS(system.file("extdata","dat","DEGs","KO-WT_nuclear_RNA-seq.rds", package = "OverlapPlots"))
+
+# DECOMPRESSION RDS files, input must be TXT
+output_file <- "output_count_file.txt"
+write.table(count.file, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE)
+count.file <- output_file
+output_file <- "output_DEGs_file.txt"
+write.table(degs.file, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE)
+degs.file <- output_file
+
 bin.size <- 40
 shift.size <- 4
 nuclear.KO <- finalRun(count.file, genotypes, degs.file, bin.size, shift.size,
@@ -88,60 +106,113 @@ nuclear.KO$overlapPlots$combined
 mCA.nuclear.KO$combined
 rm(count.file, degs.file)
 
-## KO/WT chromatin dataset (ref: Fig 2F Boxer et al. Mol Cell 2020)
-count.file <- "../dat/counts/GSE128178_10WT_10MeCP2_KO_chromatin_associated_RNAseq_gene_body_counts.txt"
-degs.file <- "../dat/DEGs/KO-WT_chromatin_RNA-seq.txt"
-bin.size <- 40
-shift.size <- 4
-chromatin.KO <- finalRun(count.file, genotypes, degs.file, bin.size, shift.size,
-                         title = "KO/WT chromatin dataset")
-mCA.chromatin.KO <- finalRunmCA(chromatin.KO$res$results, degs.file, mCA.sub, 
-                                 bin.size, shift.size, 
-                                 title = "KO/WT chromatin dataset")
-chromatin.KO$overlapPlots$combined
-mCA.chromatin.KO$combined
-rm(count.file, degs.file)
+file_path <- "output_count_file.txt"
+if (file.exists(file_path)) {
+  file.remove(file_path)
+  cat("File deleted successfully.\n")
+} else {
+  cat("File does not exist.\n")
+}
+file_path <- "output_DEGs_file.txt"
+if (file.exists(file_path)) {
+  file.remove(file_path)
+  cat("File deleted successfully.\n")
+} else {
+  cat("File does not exist.\n")
+}
+file_path <- "output_degs_file.txt"
+if (file.exists(file_path)) {
+  file.remove(file_path)
+  cat("File deleted successfully.\n")
+} else {
+  cat("File does not exist.\n")
+}
+file_path <- "output_DEGs_file.txt"
+if (file.exists(file_path)) {
+  file.remove(file_path)
+  cat("File deleted successfully.\n")
+} else {
+  cat("File does not exist.\n")
+}
+# ## KO/WT chromatin dataset (ref: Fig 2F Boxer et al. Mol Cell 2020)
+# count.file <- readRDS(system.file("extdata","dat","counts","GSE128178_10WT_10MeCP2_KO_chromatin_associated_RNAseq_gene_body_counts.rds", package = "OverlapPlots"))
+# degs.file <- readRDS(system.file("extdata","dat","DEGs","KO-WT_chromatin_RNA-seq.rds", package = "OverlapPlots"))
+# 
+# # DECOMPRESSION RDS files, input must be TXT
+# output_file <- "output_count_file.txt"
+# write.table(count.file, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE)
+# count.file <- output_file
+# output_file <- "output_DEGs_file.txt"
+# write.table(degs.file, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE)
+# degs.file <- output_file
+# 
+# 
+# bin.size <- 40
+# shift.size <- 4
+# chromatin.KO <- finalRun(count.file, genotypes, degs.file, bin.size, shift.size,
+#                          title = "KO/WT chromatin dataset")
+# mCA.chromatin.KO <- finalRunmCA(chromatin.KO$res$results, degs.file, mCA.sub, 
+#                                  bin.size, shift.size, 
+#                                  title = "KO/WT chromatin dataset")
+# chromatin.KO$overlapPlots$combined
+# mCA.chromatin.KO$combined
+# rm(count.file, degs.file)
+# file_path <- "output_count_file.txt"
+# if (file.exists(file_path)) {
+#   file.remove(file_path)
+#   cat("File deleted successfully.\n")
+# } else {
+#   cat("File does not exist.\n")
+# }
+# file_path <- "output_DEGs_file.txt"
+# if (file.exists(file_path)) {
+#   file.remove(file_path)
+#   cat("File deleted successfully.\n")
+# } else {
+#   cat("File does not exist.\n")
+# }
 
-## R306C/WT whole cell dataset  (ref: Fig 3F Boxer et al. Mol Cell 2020)
-count.file <- "../dat/counts/GSE128178_10WT_10R306C_whole_cell_RNAseq_exon_counts.txt"
-degs.file <- "../dat/DEGs/R306C-WT_whole-cell_RNA-seq.txt"
-bin.size <- 40
-shift.size <- 4
-wholeCell.R306C <- finalRun(count.file, genotypes, degs.file, bin.size, 
-                            shift.size, title = "R306C/WT whole cell dataset")
-mCA.wholeCell.R306C <- finalRunmCA(wholeCell.R306C$res$results, degs.file, 
-                                    mCA.sub, bin.size, shift.size,
-                                    title = "R306C/WT whole cell dataset")
-wholeCell.R306C$overlapPlots$combined
-mCA.wholeCell.R306C$combined
-rm(count.file, degs.file)
 
-## R306C/WT nuclear dataset 
-count.file <- "../dat/counts/GSE128178_10WT_10R306C_nuclear_RNAseq_gene_body_counts.txt"
-degs.file <- "../dat/DEGs/R306C-WT_nuclear_RNA-seq.txt"
-bin.size <- 40
-shift.size <- 4
-nuclear.R306C <- finalRun(count.file, genotypes, degs.file, bin.size,
-                          shift.size, title = "R306C/WT nuclear dataset")
-mCA.nuclear.R306C <- finalRunmCA(nuclear.R306C$res$results, degs.file, mCA.sub, 
-                                  bin.size, shift.size, 
-                                  title = "R306C/WT nuclear dataset")
-nuclear.R306C$overlapPlots$combined
-mCA.nuclear.R306C$combined
-rm(count.file, degs.file)
-
-## R306C/WT chromatin dataset
-count.file <- "../dat/counts/GSE128178_10WT_10R306C_chromatin_associated_RNAseq_gene_body_counts.txt"
-degs.file <- "../dat/DEGs/R306C-WT_chromatin_RNA-seq.txt"
-bin.size <- 40
-shift.size <- 4
-chromatin.R306C <- finalRun(count.file, genotypes, degs.file, bin.size, 
-                            shift.size, title = "R306C/WT chromatin dataset")
-mCA.chromatin.R306C <- finalRunmCA(chromatin.R306C$res$results, degs.file, 
-                                    mCA.sub, bin.size, shift.size, 
-                                    title = "R306C/WT chromatin dataset")
-chromatin.R306C$overlapPlots$combined
-mCA.chromatin.R306C$combined
-rm(count.file, degs.file)
+# ## R306C/WT whole cell dataset  (ref: Fig 3F Boxer et al. Mol Cell 2020)
+# count.file <- "../dat/counts/GSE128178_10WT_10R306C_whole_cell_RNAseq_exon_counts.txt"
+# degs.file <- "../dat/DEGs/R306C-WT_whole-cell_RNA-seq.txt"
+# bin.size <- 40
+# shift.size <- 4
+# wholeCell.R306C <- finalRun(count.file, genotypes, degs.file, bin.size, 
+#                             shift.size, title = "R306C/WT whole cell dataset")
+# mCA.wholeCell.R306C <- finalRunmCA(wholeCell.R306C$res$results, degs.file, 
+#                                     mCA.sub, bin.size, shift.size,
+#                                     title = "R306C/WT whole cell dataset")
+# wholeCell.R306C$overlapPlots$combined
+# mCA.wholeCell.R306C$combined
+# rm(count.file, degs.file)
+#  Omitting because too much data for bioconductor
+# ## R306C/WT nuclear dataset 
+# count.file <- "../dat/counts/GSE128178_10WT_10R306C_nuclear_RNAseq_gene_body_counts.txt"
+# degs.file <- "../dat/DEGs/R306C-WT_nuclear_RNA-seq.txt"
+# bin.size <- 40
+# shift.size <- 4
+# nuclear.R306C <- finalRun(count.file, genotypes, degs.file, bin.size,
+#                           shift.size, title = "R306C/WT nuclear dataset")
+# mCA.nuclear.R306C <- finalRunmCA(nuclear.R306C$res$results, degs.file, mCA.sub, 
+#                                   bin.size, shift.size, 
+#                                   title = "R306C/WT nuclear dataset")
+# nuclear.R306C$overlapPlots$combined
+# mCA.nuclear.R306C$combined
+# rm(count.file, degs.file)
+# 
+# ## R306C/WT chromatin dataset
+# count.file <- "../dat/counts/GSE128178_10WT_10R306C_chromatin_associated_RNAseq_gene_body_counts.txt"
+# degs.file <- "../dat/DEGs/R306C-WT_chromatin_RNA-seq.txt"
+# bin.size <- 40
+# shift.size <- 4
+# chromatin.R306C <- finalRun(count.file, genotypes, degs.file, bin.size, 
+#                             shift.size, title = "R306C/WT chromatin dataset")
+# mCA.chromatin.R306C <- finalRunmCA(chromatin.R306C$res$results, degs.file, 
+#                                     mCA.sub, bin.size, shift.size, 
+#                                     title = "R306C/WT chromatin dataset")
+# chromatin.R306C$overlapPlots$combined
+# mCA.chromatin.R306C$combined
+# rm(count.file, degs.file)
 
 ```

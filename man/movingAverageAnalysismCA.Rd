@@ -14,21 +14,21 @@ movingAverageAnalysismCA(
 )
 }
 \arguments{
-\item{count.file}{A dataframe resulting from the `movingAverageAnalysis` containing 
+\item{count.file}{A dataframe resulting from the `movingAverageAnalysis` containing
 normalized count data along with gene names and fold changes.}
 
-\item{degs.dat}{Path to the file with differential gene expression data from RNA-seq 
+\item{degs.dat}{Path to the file with differential gene expression data from RNA-seq
 analysis in .txt format.}
 
-\item{mCA}{A dataframe with methylation context data, including gene names, mC values, 
+\item{mCA}{A dataframe with methylation context data, including gene names, mC values,
 and gene lengths.}
 
 \item{bin.size}{Integer specifying the bin size for averaging in the plots.}
 
-\item{shift.size}{Integer specifying the step size for the moving average calculation 
+\item{shift.size}{Integer specifying the step size for the moving average calculation
 in the plots.}
 
-\item{title}{A string indicating the title of the dataset for plot annotations. 
+\item{title}{A string indicating the title of the dataset for plot annotations.
 Default is "MeCP2 KO".}
 }
 \value{
@@ -39,9 +39,9 @@ A list containing the following components:
 }
 }
 \description{
-Performs an integrated analysis of methylation context (mCA) data with RNA-seq 
-differential expression results. It generates comparative plots to examine log2 
-fold change versus methylation context (mC), distribution of gene lengths within 
+Performs an integrated analysis of methylation context (mCA) data with RNA-seq
+differential expression results. It generates comparative plots to examine log2
+fold change versus methylation context (mC), distribution of gene lengths within
 bins, and the contribution of methylation from long versus short genes.
 }
 \examples{
@@ -55,22 +55,29 @@ mCA.sub <- mCA[mCA$CA >= 5 & mCA$gene.length >= 4500,]
 mCA.sub$mCA.CA <- mCA.sub$mCA/mCA.sub$CA
 
 # Perform moving average analysis
-wholeCell.KO <- movingAverageAnalysis(dat, genotypes, degs.dat, bin.size = 60, 
+wholeCell.KO <- movingAverageAnalysis(dat, genotypes, degs.dat, bin.size = 60,
                                       shift.size = 6, title = "KO/WT whole cell dataset")
 # Perform mCA analysis
 mCA.results <- movingAverageAnalysismCA(wholeCell.KO$res$results, degs.dat, mCA.sub,
-                                        bin.size = 60, shift.size = 6, 
+                                        bin.size = 60, shift.size = 6,
                                         title = "KO/WT whole cell dataset")
 print(mCA.results$combined)
 }
 library(OverlapPlots)
-data(countsfile)
-data(refseq)
-data(degsfile)
-data(mCA)
-dat <- countsfile
-degs.dat <- degsfile
+load(file = system.file("extdata","dat-info","mm10_ncbi-refSeqGene_Dec2019.RData", package = "OverlapPlots"))
+## KO/WT chromatin dataset (ref: Fig 2F Boxer et al. Mol Cell 2020)
+count.file <- readRDS(system.file("extdata","dat","counts","GSE128178_10WT_10MeCP2_KO_whole_cell_RNAseq_exon_counts.rds", package = "OverlapPlots"))
+degs.file <- readRDS(system.file("extdata","dat","DEGs","KO-WT_whole-cell_RNA-seq.rds", package = "OverlapPlots"))
+dat <- count.file
+degs.dat <- degs.file
+mCA <- data.frame(readRDS(system.file("extdata","dat","mCA","CAperGene_10wk_boxer.RDS", package = "OverlapPlots")), stringsAsFactors = FALSE)
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
+#' # Set the first column of dat as row names
+rownames(dat) <- dat[, 1]
+rownames(degs.dat) <- degs.dat[, 1]
+# Remove the first column from dat
+dat <- dat[, -1]
+degs.dat <- degs.dat[, -1]
 bin.size <- 60
 shift.size <- 6
 wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,

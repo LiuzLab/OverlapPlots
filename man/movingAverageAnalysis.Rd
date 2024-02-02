@@ -37,9 +37,9 @@ A list containing the following elements:
 }
 \description{
 Integrates several steps of RNA-seq data analysis for knockout (KO) versus wild type (WT) comparisons
-using the DESeq2 package. The function processes exon count data, executes differential expression 
-analysis, performs k-means clustering, and generates overlap plots showing log2 fold changes 
-versus gene length. Additionally, scatter plots for gene distribution and other relevant plots 
+using the DESeq2 package. The function processes exon count data, executes differential expression
+analysis, performs k-means clustering, and generates overlap plots showing log2 fold changes
+versus gene length. Additionally, scatter plots for gene distribution and other relevant plots
 are produced.
 }
 \examples{
@@ -51,19 +51,28 @@ data(degsfile)
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
 
 # Assuming 'countsfile', 'refseq', and 'degsfile' are loaded datasets
-analysis_results <- movingAverageAnalysis(dat = countsfile, genotypes = genotypes, 
-                                         degs.dat = degsfile, bin.size = 60, 
-                                         shift.size = 6, 
+analysis_results <- movingAverageAnalysis(dat = countsfile, genotypes = genotypes,
+                                         degs.dat = degsfile, bin.size = 60,
+                                         shift.size = 6,
                                          title = "KO/WT whole cell dataset")
 print(analysis_results$overlapPlots$combined)
 }
 library(OverlapPlots)
-data(countsfile)
-data(refseq)
-data(degsfile)
-dat <- countsfile
-degs.dat <- degsfile
+
+load(file = system.file("extdata","dat-info","mm10_ncbi-refSeqGene_Dec2019.RData", package = "OverlapPlots"))
+## KO/WT chromatin dataset (ref: Fig 2F Boxer et al. Mol Cell 2020)
+count.file <- readRDS(system.file("extdata","dat","counts","GSE128178_10WT_10MeCP2_KO_whole_cell_RNAseq_exon_counts.rds", package = "OverlapPlots"))
+degs.file <- readRDS(system.file("extdata","dat","DEGs","KO-WT_whole-cell_RNA-seq.rds", package = "OverlapPlots"))
+dat <- count.file
+degs.dat <- degs.file
 genotypes <- factor(c(rep("WT", 10), rep("KO", 10)), levels = c("KO", "WT"))
+# Set the first column of dat as row names
+rownames(dat) <- dat[, 1]
+rownames(degs.dat) <- degs.dat[, 1]
+# Remove the first column from dat
+dat <- dat[, -1]
+degs.dat <- degs.dat[, -1]
+bin.size <- 60
 bin.size <- 60
 shift.size <- 6
 wholeCell.KO <- movingAverageAnalysis(dat, genotypes,  degs.dat, bin.size, shift.size,
