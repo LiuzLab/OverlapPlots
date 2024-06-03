@@ -1,6 +1,6 @@
 # Overlap plots R BioConductor package
 
-This R BioConductor package provides functionalities for generating overlap plots, which visualize the intersection and overlap of genomic regions or features. It is an adaptation of the OverlapPlots code originally developed by Aayush Raman.
+This R BioConductor package provides functionalities for generating overlap plots, which visualize the intersection and overlap of genomic regions or features. It is an adaptation of the OverlapPlots code originally developed by Aayush Raman (https://github.com/aayushraman/OverlapPlots).
 
 # Introduction
 
